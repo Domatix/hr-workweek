@@ -1,0 +1,26 @@
+<odoo>
+    <data>
+        <record id="assignment_email_template" model="mail.template">
+            <field name="name">Compensation assignment</field>
+            <field name="model_id" ref="model_hr_compensation" />
+            <field
+                name="email_from"
+            >{{object.employee_id.user_id.company_id.partner_id.email}}</field>
+            <field
+                name="subject"
+            >{{object.employee_id.user_id.company_id.name} Compensation assignment (Ref ${object.name or 'n/a' }})</field>
+            <field
+                name="partner_to"
+            >{{object.responsible_id.user_id.partner_id.id}}</field>
+            <field name="email_cc">{{object.employee_id.work_email}}</field>
+            <field name="auto_delete" eval="False" />
+            <field name="lang">{{object.employee_id.user_id.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <p>Hello <t t-out="object.responsible_id.name" />,</p>
+                <p><t t-out="object.employee_id.name" />'s compensation <t
+                        t-out="object.name"
+                    /> has been assigned to you.</p>
+            </field>
+        </record>
+    </data>
+</odoo>
