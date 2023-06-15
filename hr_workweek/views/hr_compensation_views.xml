@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_compensation_tree" model="ir.ui.view">
+        <field name="name">HR Compensations tree</field>
+        <field name="model">hr.compensation</field>
+        <field name="arch" type="xml">
+            <tree string="" create="false">
+                <field name="type" />
+                <field name="description" />
+                <field name="employee_id" />
+                <field name="petition_date" />
+                <field name="state" />
+                <field name="unit_amount" widget="float_time" sum="Total compensated" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_compensation_form" model="ir.ui.view">
+        <field name="name">HR Compensation form</field>
+        <field name="model">hr.compensation</field>
+        <field name="arch" type="xml">
+            <form string="Compensations To Approve" create="false">
+                <header>
+                    <button
+                        name="action_approve"
+                        states="draft"
+                        type="object"
+                        string="Approve compensation"
+                        groups="hr.group_hr_manager"
+                        class="oe_highlight"
+                    />
+                    <button
+                        name="action_refuse"
+                        states="draft"
+                        type="object"
+                        string="Refuse compensation"
+                        groups="hr.group_hr_manager"
+                    />
+                    <button
+                        name="action_draft"
+                        states="approved,refused"
+                        type="object"
+                        string="Draft compensation"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_allocation"
+                            type="object"
+                            attrs="{'invisible': [('allocation_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-sign-out"
+                        >
+                            <field
+                                name="hr_allocation_id"
+                                string="Allocation"
+                                invisible="1"
+                            />
+                            <field
+                                name="allocation_count"
+                                widget="statinfo"
+                                string="Allocation"
+                            />
+                        </button>
+                    </div>
+                    <group>
+                        <field name="employee_id" readonly="1" />
+                        <field name="responsible_id" readonly="1" />
+                        <field name="petition_date" readonly="1" />
+                        <field name="unit_amount" widget="float_time" />
+                        <field name="type" readonly="1" />
+                    </group>
+                    <group>
+                        <field name="description" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="hr_compensation_act_window" model="ir.actions.act_window">
+        <field name="name">Compensations To Approve</field>
+        <field name="res_model">hr.compensation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'draft')]</field>
+    </record>
+    <record id="filter_responsible_hr_compensation" model="ir.filters">
+        <field name="name">My compensations</field>
+        <field name="model_id">hr.compensation</field>
+        <field name="user_id" eval="False" />
+        <field name="domain">[('responsible_id.user_id', '=', uid)]</field>
+        <field name="is_default" eval="True" />
+    </record>
+    <record id="my_hr_compensation_act_window" model="ir.actions.act_window">
+        <field name="name">My compensations</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="res_model">hr.compensation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="menu_hr_compensation"
+        parent="hr_workweek.menu_hr_workweek_root"
+        action="hr_compensation_act_window"
+        sequence="1"
+        groups="hr.group_hr_manager"
+    />
+    <menuitem
+        id="menu_my_hr_compensation"
+        parent="hr_workweek.menu_hr_workweek_root"
+        action="my_hr_compensation_act_window"
+        sequence="2"
+        groups="hr.group_hr_user"
+    />
+</odoo>

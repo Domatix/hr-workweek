@@ -1,0 +1,223 @@
+<odoo>
+    <record id="hr_workweek_view_form" model="ir.ui.view">
+        <field name="name">hr.workweek.view.form</field>
+        <field name="model">hr.workweek</field>
+        <field name="arch" type="xml">
+            <form string="hr_workweek_form">
+                <header>
+                </header>
+                <sheet>
+                  <div class="oe_button_box" name="button_box">
+                    <button
+                            name="action_view_analytic_lines"
+                            type="object"
+                            attrs="{'invisible': [('account_analytic_lines_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-clock-o"
+                        >
+                        <field
+                                name="account_analytic_lines_count"
+                                widget="statinfo"
+                                string="Analytic lines"
+                            />
+                    </button>
+                    <button
+                            name="action_view_compensations"
+                            type="object"
+                            attrs="{'invisible': [('compensation_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-calendar-check-o"
+                        >
+                        <field
+                                name="compensation_count"
+                                widget="statinfo"
+                                string="Compensations"
+                            />
+                    </button>
+                    <button
+                            name="action_view_leaves"
+                            type="object"
+                            attrs="{'invisible': [('hr_leaves_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-calendar"
+                        >
+                        <field
+                                name="hr_leaves_count"
+                                widget="statinfo"
+                                string="Leaves"
+                            />
+                    </button>
+                    <button
+                            name="action_view_public_holidays"
+                            type="object"
+                            attrs="{'invisible': [('hr_holidays_public_lines_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-calendar-o"
+                        >
+                        <field
+                                name="hr_holidays_public_lines_count"
+                                widget="statinfo"
+                                string="Holidays"
+                            />
+                    </button>
+              </div>
+                    <div class="oe_title">
+                        <h1 class="flex-fill d-flex flex-row">
+                            <field name="name" force_save="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="General info.">
+                            <div class="o_row">
+                                From
+                                <field
+                                    name="date_start"
+                                    widget="daterange"
+                                    options="{'related_end_date': 'date_end'}"
+                                />
+                                to
+                                <field
+                                    name="date_end"
+                                    widget="daterange"
+                                    options="{'related_start_date': 'date_start'}"
+                                />
+                            </div>
+                            <field name="employee_id" />
+                            <field name="progress" widget="progressbar" />
+                            <field name="description" />
+                        </group>
+                        <group string="Working hours info.">
+                            <field name="hours_worked" widget="float_time" />
+                            <field name="hours_leave" widget="float_time" />
+                            <field name="hours_to_work" widget="float_time" />
+                            <hr />
+                            <field name="hours_difference" widget="float_time" />
+                            <field
+                                name="hours_compensated"
+                                widget="float_time"
+                                sum="Total of compensated hours"
+                            />
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="hr_workweek_view_tree" model="ir.ui.view">
+        <field name="name">hr.workweek.view.tree</field>
+        <field name="model">hr.workweek</field>
+        <field name="arch" type="xml">
+            <tree
+                string="hr_workweek_tree"
+                decoration-danger="hours_difference==hours_to_work if hours_to_work &gt; 0 else hours_difference &gt; 0"
+                decoration-success="hours_difference&lt;=0.01"
+                default_order="date_end desc"
+            >
+                <field name="employee_id" />
+                <field name="name" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field
+                    name="hours_worked"
+                    widget="float_time"
+                    sum="Total worked hours"
+                />
+                <field name="hours_leave" widget="float_time" sum="Total leave hours" />
+                <field
+                    name="hours_to_work"
+                    widget="float_time"
+                    sum="Total to work hours"
+                />
+                <field
+                    name="hours_difference"
+                    widget="float_time"
+                    sum="Total hours difference"
+                />
+                <field
+                    name="hours_compensated"
+                    widget="float_time"
+                    sum="Total compensated hours"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="all_workweek_search" model="ir.ui.view">
+        <field name="name">hr.workweek.search</field>
+        <field name="model">hr.workweek</field>
+        <field name="arch" type="xml">
+            <search string="Workweeks">
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="description" />
+                <field name="employee_id" />
+                <field
+                    name="hours_to_work"
+                    widget="float_time"
+                    sum="Total of hours to work"
+                />
+                <field
+                    name="hours_worked"
+                    widget="float_time"
+                    sum="Total of hours worked"
+                />
+                <field
+                    name="hours_difference"
+                    widget="float_time"
+                    sum="Total of hours to compensate"
+                />
+                <field
+                    name="hours_compensated"
+                    widget="float_time"
+                    sum="Total of compensated hours"
+                />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter
+                        string="Employee"
+                        name="groupby_employee"
+                        domain="[]"
+                        context="{'group_by':'employee_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="hr_workweek_act_window" model="ir.actions.act_window">
+        <field name="name">Workweeks</field>
+        <field name="res_model">hr.workweek</field>
+        <field name="search_view_id" ref="all_workweek_search" />
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="my_hr_workweek_act_window" model="ir.actions.act_window">
+        <field name="name">My workweeks</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="res_model">hr.workweek</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="menu_hr_workweek_root"
+        name="Workweeks"
+        parent="hr_timesheet.timesheet_menu_root"
+        sequence="5"
+        groups="hr.group_hr_user"
+    />
+    <menuitem
+        id="menu_hr_workweek"
+        parent="menu_hr_workweek_root"
+        action="hr_workweek_act_window"
+        sequence="1"
+        groups="hr.group_hr_manager"
+    />
+    <menuitem
+        id="menu_my_hr_workweek"
+        parent="menu_hr_workweek_root"
+        action="my_hr_workweek_act_window"
+        sequence="2"
+        groups="hr.group_hr_user"
+    />
+</odoo>
