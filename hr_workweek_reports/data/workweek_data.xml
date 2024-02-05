@@ -56,10 +56,9 @@
                             border: border: 1px solid #ddd;padding: 8px;
                         }
                     </style>
-                    <t t-set="employee" t-value="ctx.get('employee', employee)" />
                     <t
                         t-set="calendars"
-                        t-value="ctx.get('calendars', allowed_calendars)"
+                        t-value="ctx.get('calendars')"
                     />
                     <t t-foreach="calendars" t-as="calendar">
                         <h2
@@ -95,33 +94,29 @@
                             </thead>
                             <tbody>
                                 <t
-                                    t-foreach="employee.search([('resource_calendar_id', '=', calendar.id)])"
+                                    t-foreach="request.env['hr.employee'].sudo().search([('resource_calendar_id', '=', calendar.id)])"
                                     t-as="employee"
                                 >
                                     <tr style="text-align: left;">
                                         <td>
-                                            <t t-out="employee.name" />
+                                            <span t-field="employee.name" />
                                         </td>
                                         <td>
-                                            <t
-                                                t-out="employee.current_workweek.hours_worked"
+                                            <span
+                                                t-field="employee.current_workweek.hours_worked"
                                             />
                                         </td>
                                         <td
-                                            t-name="hours_difference_workweek"
                                             t-att-style="'background-color: %s' % ('#ef9a9a' if employee.current_workweek.hours_difference &gt; 0 else
-                                                                                    '#93c2e5' if employee.current_workweek.hours_difference &lt; 0 else '#69f0ae')"
-                                        >
-                                            <t
-                                                t-out="employee.current_workweek.hours_difference"
+                                                                                    '#93c2e5' if employee.current_workweek.hours_difference &lt; 0 else '#69f0ae')">
+                                            <span
+                                                t-field="employee.current_workweek.hours_difference"
                                             />
                                         </td>
                                         <td
-                                            t-name="hours_difference_total"
                                             t-att-style="'background-color: %s' % ('#ef9a9a' if employee.hours_difference &gt; 0 else
-                                                                                    '#93c2e5' if employee.hours_difference &lt; 0 else '#69f0ae')"
-                                        >
-                                            <t t-out="employee.hours_difference" />
+                                                                                    '#93c2e5' if employee.hours_difference &lt; 0 else '#69f0ae')">
+                                            <span t-field="employee.hours_difference" />
                                         </td>
                                     </tr>
                                 </t>
