@@ -1,16 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
         <record id="hours_worked_email_template" model="mail.template">
             <field name="name">Weekly report of worked hours</field>
             <field name="model_id" ref="model_hr_employee" />
             <field name="email_from">{{object.company_id.partner_id.email}}</field>
-            <field name="subject">
-                {{object.name}}'s weekly report of worked hours: {{object.current_workweek.date_start}} -> {{object.current_workweek.date_end}}
-            </field>
+            <field name="subject">{{object.name}}'s weekly report of worked hours: {{object.current_workweek.date_start}} &#8594; {{object.current_workweek.date_end}}</field>
             <field name="email_to">{{object.work_email}}</field>
             <field name="email_cc">{{object.coach_id.work_email}}</field>
             <field name="lang">{{object.user_id.partner_id.lang}}</field>
             <field name="body_html" type="html">
+                <!-- <t t-set="hours_difference" t-value="hours_difference"/>
+                <t t-set="hours_difference_str" t-value="hours_difference_str"/>
+                <t t-set="current_workweek_hours_to_work" t-value="current_workweek_hours_to_work"/>
+                <t t-set="current_workweek_hours_to_work_str" t-value="current_workweek_hours_to_work_str"/>
+                <t t-set="current_workweek_hours_worked_str" t-value="current_workweek_hours_worked_str"/> -->
                 <p>Hello <t t-out="object.name" />,</p>
                 <p>This week, from <t
                         t-out="object.current_workweek.date_start"

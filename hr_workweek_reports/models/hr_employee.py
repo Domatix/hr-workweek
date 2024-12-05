@@ -16,7 +16,14 @@ class HrEmployee(models.Model):
                 for employee in self.env["hr.employee"].search(
                     [("resource_calendar_id", "not in", excluded_calendars)]
                 ):
-                    template.send_mail(employee.id, force_send=True)
+                    context = {
+                        'hours_difference': getattr(employee.current_workweek, 'hours_difference', 0),
+                        'hours_difference_str': str(getattr(employee.current_workweek, 'hours_difference', 0)),
+                        'current_workweek_hours_to_work': getattr(employee.current_workweek, 'hours_to_work', 0),
+                        'current_workweek_hours_to_work_str': str(getattr(employee.current_workweek, 'hours_to_work', 0)),
+                        'current_workweek_hours_worked_str': str(getattr(employee.current_workweek, 'hours_worked', 0)),
+                    }
+                    template.with_context(context).send_mail(employee.id, force_send=True)
 
     @api.model
     def send_weekly_summary_report_email(self):
