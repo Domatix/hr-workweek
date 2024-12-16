@@ -45,6 +45,12 @@ class HrEmployee(models.Model):
                         )
                     ]
                 )
+                employees_by_calendar = {
+                    calendar.id: self.env["hr.employee"].sudo().search(
+                        [("resource_calendar_id", "=", calendar.id)]
+                    )
+                    for calendar in allowed_calendars
+                }
                 allowed_employees = self.env["hr.employee"].search(
                     [
                         (
@@ -58,7 +64,7 @@ class HrEmployee(models.Model):
                     ]
                 )
                 for allowed_employee in allowed_employees:
-                    template.with_context(calendars=allowed_calendars).send_mail(allowed_employee.id, force_send=True, email_values={
+                    template.with_context(calendars=allowed_calendars, employees_by_calendar=employees_by_calendar).send_mail(allowed_employee.id, force_send=True, email_values={
                         'email_to': allowed_employee.work_email,
                         'email_from': self.env["hr.employee"]
                         .browse(
