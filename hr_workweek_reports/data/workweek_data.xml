@@ -98,7 +98,7 @@
                             </thead>
                             <tbody>
                                 <t
-                                    t-foreach="request.env['hr.employee'].sudo().search([('resource_calendar_id', '=', calendar.id)])"
+                                    t-foreach="ctx.get('employees_by_calendar').get(calendar.id, [])"
                                     t-as="employee"
                                 >
                                     <tr style="text-align: left;">
