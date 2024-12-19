@@ -9,6 +9,11 @@ class AccountAnalyticLine(models.Model):
         string="Workweek",
     )
 
+    holiday_id = fields.Many2one(
+        comodel_name="hr.leave",
+        string='Time Off Request'
+    )
+
     @api.model
     def create(self, vals):
         res = super().create(vals)

@@ -33,7 +33,7 @@ class HrWorkweekWizard(models.TransientModel):
     compensation_amount_max = fields.Float(
         string="Hours to compensate",
         default=_default_compensation_amount,
-        readonly=1,
+        readonly=True,
     )
 
     def _default_responsible_id(self):

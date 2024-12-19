@@ -9,14 +9,14 @@
                     name="action_compensate"
                     type="object"
                     string="Compensate"
-                    attrs="{'invisible': [('hours_difference', '&gt;', 0)]}"
+                    invisible="hours_difference > 0"
                 />
             </xpath>
             <div class="oe_button_box" name="button_box">
                 <button
                     name="action_view_workweek_ids"
                     type="object"
-                    attrs="{'invisible': [('workweek_ids_count', '=', 0)]}"
+                    invisible="workweek_ids_count == 0"
                     class="oe_stat_button"
                     icon="fa-calendar-minus-o"
                 >
@@ -29,7 +29,7 @@
                 <button
                     name="action_view_compensation_ids"
                     type="object"
-                    attrs="{'invisible': [('compensation_ids_count', '=', 0)]}"
+                    invisible="compensation_ids_count == 0"
                     class="oe_stat_button"
                     icon="fa-calendar-check-o"
                 >
