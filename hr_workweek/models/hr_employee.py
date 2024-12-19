@@ -5,7 +5,8 @@ from odoo.exceptions import UserError
 
 
 class HrEmployee(models.Model):
-    _inherit = "hr.employee"
+    _name = "hr.employee"
+    _inherit = ["hr.employee", "mail.thread"]
 
     hr_workweek_ids = fields.One2many(
         comodel_name="hr.workweek",
@@ -114,12 +115,12 @@ class HrEmployee(models.Model):
         compensation_id = self.env["hr.compensation"].create(vals)
         compensation_id.create_leave_allocation()
         template = self.env.ref("hr_workweek.assignment_email_template")
-        self.message_post_with_template(
-            template.id,
-            composition_mode="comment",
-            model="hr.compensation",
-            res_id=compensation_id.id,
-        )
+        if template:
+            template.with_context(
+                default_model="hr.compensation",
+                default_res_id=compensation_id.id,
+                default_composition_mode="comment"
+            ).send_mail(compensation_id.id, force_send=True)
         return compensation_id
 
     def action_compensate(self):
@@ -129,9 +130,9 @@ class HrEmployee(models.Model):
         `_action_compensate`
         :return:
         """
-        ir_default = self.env["ir.default"].sudo()
+        ir_config = self.env["ir.config_parameter"].sudo()
         leave_type = self.env["hr.leave.type"].search(
-            [("id", "=", ir_default.get("res.config.settings", "hr_leave_type"))]
+            [("id", "=", ir_config.get_param("res.config.settings.hr_leave_type", default=0))], limit=1,
         )
         if leave_type:
             return {
@@ -156,10 +157,13 @@ class HrEmployee(models.Model):
 
     @api.model
     def create_current_workweek(self):
-        ir_default = self.env["ir.default"].sudo()
-        excluded_calendars = (
-            ir_default.get("res.config.settings", "excluded_calendar_ids") or []
+        ir_config = self.env["ir.config_parameter"].sudo()
+        excluded_calendar_ids = ir_config.get_param(
+            "res.config.settings.excluded_calendar_ids", default=""
         )
+        excluded_calendars = [
+            int(id) for id in excluded_calendar_ids.split(",") if id.isdigit()
+        ]
         date_start, date_end = self.get_workweek_dates()
         for record in self.env[self._name].search(
             [("resource_calendar_id", "not in", excluded_calendars)]

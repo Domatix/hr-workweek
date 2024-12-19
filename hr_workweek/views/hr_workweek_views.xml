@@ -7,96 +7,64 @@
                 <header>
                 </header>
                 <sheet>
-                  <div class="oe_button_box" name="button_box">
-                    <button
+                    <div class="oe_button_box" name="button_box">
+                        <button
                             name="action_view_analytic_lines"
                             type="object"
-                            attrs="{'invisible': [('account_analytic_lines_count', '=', 0)]}"
+                            invisible="account_analytic_lines_count == 0"
                             class="oe_stat_button"
                             icon="fa-clock-o"
                         >
-                        <field
-                                name="account_analytic_lines_count"
-                                widget="statinfo"
-                                string="Analytic lines"
-                            />
-                    </button>
-                    <button
+                            <field name="account_analytic_lines_count" widget="statinfo" string="Analytic lines"/>
+                        </button>
+                        <button
                             name="action_view_compensations"
                             type="object"
-                            attrs="{'invisible': [('compensation_count', '=', 0)]}"
+                            invisible="compensation_count == 0"
                             class="oe_stat_button"
                             icon="fa-calendar-check-o"
                         >
-                        <field
-                                name="compensation_count"
-                                widget="statinfo"
-                                string="Compensations"
-                            />
-                    </button>
-                    <button
+                            <field name="compensation_count" widget="statinfo" string="Compensations"/>
+                        </button>
+                        <button
                             name="action_view_leaves"
                             type="object"
-                            attrs="{'invisible': [('hr_leaves_count', '=', 0)]}"
+                            invisible="hr_leaves_count == 0"
                             class="oe_stat_button"
                             icon="fa-calendar"
                         >
-                        <field
-                                name="hr_leaves_count"
-                                widget="statinfo"
-                                string="Leaves"
-                            />
-                    </button>
-                    <button
+                            <field name="hr_leaves_count" widget="statinfo" string="Leaves"/>
+                        </button>
+                        <button
                             name="action_view_public_holidays"
                             type="object"
-                            attrs="{'invisible': [('hr_holidays_public_lines_count', '=', 0)]}"
+                            invisible="hr_holidays_public_lines_count == 0"
                             class="oe_stat_button"
                             icon="fa-calendar-o"
                         >
-                        <field
-                                name="hr_holidays_public_lines_count"
-                                widget="statinfo"
-                                string="Holidays"
-                            />
-                    </button>
-              </div>
+                            <field name="hr_holidays_public_lines_count" widget="statinfo" string="Holidays"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
-                        <h1 class="flex-fill d-flex flex-row">
+                        <h1>
                             <field name="name" force_save="1" />
                         </h1>
                     </div>
                     <group>
-                        <group string="General info.">
-                            <div class="o_row">
-                                From
-                                <field
-                                    name="date_start"
-                                    widget="daterange"
-                                    options="{'related_end_date': 'date_end'}"
-                                />
-                                to
-                                <field
-                                    name="date_end"
-                                    widget="daterange"
-                                    options="{'related_start_date': 'date_start'}"
-                                />
-                            </div>
-                            <field name="employee_id" />
-                            <field name="progress" widget="progressbar" />
-                            <field name="description" />
+                        <group string="INFORMACIÓN GENERAL" colspan="2">
+                            <field name="date_start" string="Desde" options="{'related_end_date': 'date_end'}"/>
+                            <field name="date_end" string="Hasta" options="{'related_start_date': 'date_start'}"/>
+                            <field name="employee_id" string="Empleado"/>
+                            <field name="progress" widget="progressbar" string="Progreso"/>
+                            <field name="description" string="Descripción"/>
                         </group>
-                        <group string="Working hours info.">
-                            <field name="hours_worked" widget="float_time" />
-                            <field name="hours_leave" widget="float_time" />
-                            <field name="hours_to_work" widget="float_time" />
-                            <hr />
-                            <field name="hours_difference" widget="float_time" />
-                            <field
-                                name="hours_compensated"
-                                widget="float_time"
-                                sum="Total of compensated hours"
-                            />
+                        <group string="INFORMACIÓN SOBRE LAS HORAS DE TRABAJO" colspan="2">
+                            <field name="hours_worked" widget="float_time" string="Horas trabajadas"/>
+                            <field name="hours_leave" widget="float_time" string="Horas de ausencia"/>
+                            <field name="hours_to_work" widget="float_time" string="Horas a trabajar"/>
+                            <hr/>
+                            <field name="hours_difference" widget="float_time" string="Diferencia de horas"/>
+                            <field name="hours_compensated" widget="float_time" string="Horas compensadas"/>
                         </group>
                     </group>
                 </sheet>
@@ -108,6 +76,7 @@
             </form>
         </field>
     </record>
+
     <record id="hr_workweek_view_tree" model="ir.ui.view">
         <field name="name">hr.workweek.view.tree</field>
         <field name="model">hr.workweek</field>
@@ -146,6 +115,7 @@
             </tree>
         </field>
     </record>
+
     <record id="all_workweek_search" model="ir.ui.view">
         <field name="name">hr.workweek.search</field>
         <field name="model">hr.workweek</field>
@@ -187,18 +157,21 @@
             </search>
         </field>
     </record>
+
     <record id="hr_workweek_act_window" model="ir.actions.act_window">
         <field name="name">Workweeks</field>
         <field name="res_model">hr.workweek</field>
         <field name="search_view_id" ref="all_workweek_search" />
         <field name="view_mode">tree,form</field>
     </record>
+
     <record id="my_hr_workweek_act_window" model="ir.actions.act_window">
         <field name="name">My workweeks</field>
         <field name="domain">[('employee_id.user_id', '=', uid)]</field>
         <field name="res_model">hr.workweek</field>
         <field name="view_mode">tree,form</field>
     </record>
+
     <menuitem
         id="menu_hr_workweek_root"
         name="Workweeks"
@@ -206,6 +179,7 @@
         sequence="5"
         groups="hr.group_hr_user"
     />
+
     <menuitem
         id="menu_hr_workweek"
         parent="menu_hr_workweek_root"
@@ -213,6 +187,7 @@
         sequence="1"
         groups="hr.group_hr_manager"
     />
+    
     <menuitem
         id="menu_my_hr_workweek"
         parent="menu_hr_workweek_root"

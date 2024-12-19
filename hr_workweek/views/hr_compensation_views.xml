@@ -22,7 +22,7 @@
                 <header>
                     <button
                         name="action_approve"
-                        states="draft"
+                        invisible="state != 'draft'"
                         type="object"
                         string="Approve compensation"
                         groups="hr.group_hr_manager"
@@ -30,14 +30,14 @@
                     />
                     <button
                         name="action_refuse"
-                        states="draft"
+                        invisible="state != 'draft'"
                         type="object"
                         string="Refuse compensation"
                         groups="hr.group_hr_manager"
                     />
                     <button
                         name="action_draft"
-                        states="approved,refused"
+                        invisible="state not in ['approved', 'refused']"
                         type="object"
                         string="Draft compensation"
                     />
@@ -48,7 +48,7 @@
                         <button
                             name="action_view_allocation"
                             type="object"
-                            attrs="{'invisible': [('allocation_count', '=', 0)]}"
+                            invisible="allocation_count == 0"
                             class="oe_stat_button"
                             icon="fa-sign-out"
                         >

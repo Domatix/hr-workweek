@@ -29,7 +29,7 @@ class HrCompensation(models.Model):
         string="Status",
         readonly=True,
         default="draft",
-        track_visibility=True,
+        tracking=True
     )
 
     employee_id = fields.Many2one(
@@ -93,8 +93,8 @@ class HrCompensation(models.Model):
             record.write({"state": "draft"})
 
     def create_leave_allocation(self):
-        irDefault = self.env["ir.default"].sudo()
-        hr_leave_type = irDefault.get("res.config.settings", "hr_leave_type")
+        ir_config = self.env["ir.config_parameter"].sudo()
+        hr_leave_type = int(ir_config.get_param("res.config.settings.hr_leave_type", default=0))
         self.hr_allocation_id = self.env["hr.leave.allocation"].create(
             {
                 "name": self.description or self.name,
@@ -104,10 +104,9 @@ class HrCompensation(models.Model):
                 "holiday_type": "employee",
                 "number_of_hours_display": self.unit_amount,
                 "employee_id": self.employee_id.id,
-                "state": "draft",
+                "state": "confirm",
             }
         )
-        self.hr_allocation_id.action_confirm()
 
     def action_view_allocation(self):
         return {
