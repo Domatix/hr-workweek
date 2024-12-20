@@ -10,11 +10,6 @@
             <field name="email_cc">{{object.coach_id.work_email}}</field>
             <field name="lang">{{object.user_id.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <!-- <t t-set="hours_difference" t-value="hours_difference"/>
-                <t t-set="hours_difference_str" t-value="hours_difference_str"/>
-                <t t-set="current_workweek_hours_to_work" t-value="current_workweek_hours_to_work"/>
-                <t t-set="current_workweek_hours_to_work_str" t-value="current_workweek_hours_to_work_str"/>
-                <t t-set="current_workweek_hours_worked_str" t-value="current_workweek_hours_worked_str"/> -->
                 <p>Hello <t t-out="object.name" />,</p>
                 <p>This week, from <t
                         t-out="object.current_workweek.date_start"
