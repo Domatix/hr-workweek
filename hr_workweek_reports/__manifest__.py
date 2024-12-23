@@ -5,7 +5,7 @@
     "author": "Domatix",
     "website": "https://www.domatix.com",
     "category": "Human Resources",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "depends": [
         "hr_workweek",
     ],
