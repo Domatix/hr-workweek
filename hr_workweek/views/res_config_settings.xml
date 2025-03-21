@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr</field>
+        <field name="model">res.config.settings</field>
+        <field name='inherit_id' ref='hr.res_config_settings_view_form' />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='hr']" position="inside">
+                <h2>Workweeks settings</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="hr_leave_type" />
+                            <field
+                                name="hr_leave_type"
+                                options="{'no_create_edit':True}"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="send_mail_notification" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label
+                                for="send_mail_notification"
+                                string="Send weekly workweek report"
+                            />
+                            <div class="text-muted" id="send_mail_notification">
+                                Activate weekly mail report, this is: a per-employee email will be sent with the current
+                                week of work information.
+                                Furthermore, a summary of the aforementioned information will be sent to the employees
+                                picked onto the 'Summary destination emails
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="summary_notification_recipient_ids" />
+                            <field
+                                name="summary_notification_recipient_ids"
+                                widget="many2many_tags"
+                            />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="send_from_employee_id" />
+                            <field name="send_from_employee_id" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="excluded_calendar_ids" />
+                            <field
+                                name="excluded_calendar_ids"
+                                widget="many2many_tags"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

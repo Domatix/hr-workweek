@@ -1,0 +1,51 @@
+<odoo>
+    <record id="view_employee_form_view_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_compensate"
+                    type="object"
+                    string="Compensate"
+                    invisible="hours_difference > 0"
+                />
+            </xpath>
+            <div class="oe_button_box" name="button_box">
+                <button
+                    name="action_view_workweek_ids"
+                    type="object"
+                    invisible="workweek_ids_count == 0"
+                    class="oe_stat_button"
+                    icon="fa-calendar-minus-o"
+                >
+                    <field
+                        name="workweek_ids_count"
+                        widget="statinfo"
+                        string="Workweeks"
+                    />
+                </button>
+                <button
+                    name="action_view_compensation_ids"
+                    type="object"
+                    invisible="compensation_ids_count == 0"
+                    class="oe_stat_button"
+                    icon="fa-calendar-check-o"
+                >
+                    <field
+                        name="compensation_ids_count"
+                        widget="statinfo"
+                        string="Compensations"
+                    />
+                </button>
+            </div>
+            <xpath expr="//group[@name='managers']" position="after">
+                <group name="workweeks" string="Workweeks">
+                    <field name="hours_difference" widget="float_time" />
+                    <field name="resource_calendar_id" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
