@@ -87,10 +87,10 @@ class HrEmployee(models.Model):
         for employee in self:
             emp_timesheets = timesheets.filtered(lambda t: t.employee_id == employee)
             total_worked = sum(emp_timesheets.mapped('unit_amount'))
-            total_billed = sum(emp_timesheets.mapped('unit_amount_invoiced'))
+            total_invoiced = sum(emp_timesheets.mapped('unit_amount_invoiced'))
             employee.total_hours_worked = total_worked
-            employee.total_hours_invoiced = total_billed
-            employee.work_efficiency = min((total_billed / total_worked * 100, 100) if total_worked > 0 else 0.0)
+            employee.total_hours_invoiced = total_invoiced
+            employee.work_efficiency = min((total_invoiced / total_worked * 100, 100) if total_worked > 0 else 0.0)
 
     def _compute_workweek_ids_count(self):
         for record in self:

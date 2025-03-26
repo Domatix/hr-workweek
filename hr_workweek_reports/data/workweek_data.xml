@@ -18,7 +18,7 @@
                         t-out="object.current_workweek.hours_worked"
                     /> hours of
                     <t t-out="object.current_workweek.hours_to_work" />,
-                    with <t t-out="object.current_workweek.unit_amount_invoiced" /> billed hours
+                    with <t t-out="object.current_workweek.unit_amount_invoiced" /> invoiced hours
                     (<t t-out="round(object.current_workweek.work_efficiency, 2)" />% efficiency).
                 </p>
 

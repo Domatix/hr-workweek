@@ -50,7 +50,7 @@
                 <group string="Efficiency">
                     <field name="invoiced_hours_start_date_str" readonly="1"  options="{'format': 'dd/MM/yyyy'}" />
                     <field name="total_hours_worked" widget="float_time" string="Total Worked"/>
-                    <field name="total_hours_invoiced" widget="float_time" string="Total Billed"/>
+                    <field name="total_hours_invoiced" widget="float_time" string="Total Invoiced"/>
                     <field name="work_efficiency" string="Efficiency" widget="progressbar" readonly="1"/>
                 </group>
             </xpath>

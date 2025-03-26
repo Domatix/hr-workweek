@@ -129,14 +129,14 @@ class HrWorkweek(models.Model):
     )
 
     unit_amount_invoiced = fields.Float(
-        string="Horas facturadas",
+        string="Invoiced Hours",
         compute="_compute_unit_amount_invoiced",
         store=True,
-        help="Total hours billed in the week"
+        help="Total hours invoiced in the week"
     )
     
     work_efficiency = fields.Float(
-        string="Eficiencia",
+        string="Efficiency",
         compute="_compute_work_efficiency",
         store=True,
         help="Percentage of worked hours that are billable (unit_amount_invoiced / unit_amount * 100)"
