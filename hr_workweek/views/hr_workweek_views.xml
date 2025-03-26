@@ -96,6 +96,8 @@
                     widget="float_time"
                     sum="Total worked hours"
                 />
+                <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours"/>
+                <field name="work_efficiency" widget="progressbar"/>
                 <field name="hours_leave" widget="float_time" sum="Total leave hours" />
                 <field
                     name="hours_to_work"
