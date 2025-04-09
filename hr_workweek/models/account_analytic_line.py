@@ -1,4 +1,6 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+from datetime import date
 
 
 class AccountAnalyticLine(models.Model):
@@ -16,6 +18,10 @@ class AccountAnalyticLine(models.Model):
 
     @api.model
     def create(self, vals):
+        today = fields.Date.context_today(self)
+        if vals['date'] != today:
+            if not self.env.user.has_group('hr_workweek.group_timesheet_modified_date'):
+                raise UserError(_("You can only record hours for today."))
         res = super().create(vals)
         workweek = self.env["hr.workweek"].get_current_workweek(
             res.employee_id, res.date
@@ -34,6 +40,5 @@ class AccountAnalyticLine(models.Model):
                 )
                 if workweek:
                     vals["hr_workweek_id"] = workweek.id
-
         res = super().write(vals)
         return res
