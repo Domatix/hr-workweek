@@ -14,6 +14,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        'security/security_groups.xml',
         "wizard/hr_workweek_wizard_views.xml",
         "views/hr_employee_views.xml",
         "views/hr_workweek_views.xml",

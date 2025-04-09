@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-26 09:29+0000\n"
-"PO-Revision-Date: 2025-03-26 09:29+0000\n"
+"POT-Creation-Date: 2025-04-09 11:03+0000\n"
+"PO-Revision-Date: 2025-04-09 11:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,7 @@ msgstr "Partes de horas"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_needaction
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_needaction
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_needaction
 msgid "Action Needed"
 msgstr "Acción necesaria"
@@ -119,7 +120,7 @@ msgstr "Asignaciones"
 #. module: hr_workweek
 #: model:ir.model,name:hr_workweek.model_account_analytic_line
 msgid "Analytic Line"
-msgstr "Línea analítica"
+msgstr "Línea Analítica"
 
 #. module: hr_workweek
 #. odoo-python
@@ -155,6 +156,7 @@ msgstr "Pedir compensación"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_attachment_count
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_attachment_count
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_attachment_count
 msgid "Attachment Count"
 msgstr "Conteo de archivos adjuntos"
@@ -211,7 +213,7 @@ msgstr "Compensaciones a aprobar"
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__compensation_count
 msgid "Compensations count"
-msgstr ""
+msgstr "Conteo compensaciones"
 
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__hours_leave
@@ -272,7 +274,14 @@ msgstr "Semana de trabajo actual"
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_res_config_settings__invoiced_hours_start_date
 msgid "Date from which to calculate invoiced hours and efficiency"
-msgstr "Fecha a partir de la cual se calculan las horas facturadas y la eficiencia total"
+msgstr ""
+"Fecha a partir de la cual se calculan las horas facturadas y la eficiencia "
+"total"
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Descripción"
+msgstr ""
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__description
@@ -280,6 +289,16 @@ msgstr "Fecha a partir de la cual se calculan las horas facturadas y la eficienc
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard__compensation_description
 msgid "Description"
 msgstr "Descripción"
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Desde"
+msgstr ""
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Diferencia de horas"
+msgstr ""
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__display_name
@@ -311,6 +330,11 @@ msgid "Efficiency"
 msgstr "Eficiencia"
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Empleado"
+msgstr ""
+
+#. module: hr_workweek
 #: model:ir.model,name:hr_workweek.model_hr_employee
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__employee_id
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__employee_id
@@ -325,7 +349,6 @@ msgstr "Horario del Empleado"
 
 #. module: hr_workweek
 #: model:ir.actions.server,name:hr_workweek.ir_cron_create_workweek_ir_actions_server
-#: model:ir.cron,cron_name:hr_workweek.ir_cron_create_workweek
 msgid "Employees workweek creation"
 msgstr "Creación de las semanas de trabajo"
 
@@ -354,12 +377,14 @@ msgstr ""
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_follower_ids
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_follower_ids
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_follower_ids
 msgid "Followers"
 msgstr "Seguidores"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_partner_ids
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_partner_ids
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Seguidores (Empresas)"
@@ -369,16 +394,6 @@ msgstr "Seguidores (Empresas)"
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
 msgstr ""
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "From"
-msgstr "Desde el"
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "General info."
-msgstr "Información general."
 
 #. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.all_workweek_search
@@ -392,8 +407,14 @@ msgstr "Compensaciones"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__has_message
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__has_message
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__has_message
 msgid "Has Message"
+msgstr "Tiene un mensaje"
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Hasta"
 msgstr ""
 
 #. module: hr_workweek
@@ -408,6 +429,26 @@ msgstr "Festivos"
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_holidays_public_lines_count
 msgid "Holidays count"
+msgstr ""
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Horas a trabajar"
+msgstr ""
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Horas compensadas"
+msgstr ""
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Horas de ausencia"
+msgstr ""
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Horas trabajadas"
 msgstr ""
 
 #. module: hr_workweek
@@ -435,6 +476,16 @@ msgid "ID"
 msgstr ""
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "INFORMACIÓN GENERAL"
+msgstr ""
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "INFORMACIÓN SOBRE LAS HORAS DE TRABAJO"
+msgstr ""
+
+#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__activity_exception_icon
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__activity_exception_icon
 msgid "Icon"
@@ -448,6 +499,7 @@ msgstr ""
 
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_hr_compensation__message_needaction
+#: model:ir.model.fields,help:hr_workweek.field_hr_employee__message_needaction
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Si está marcado, hay nuevos mensajes que requieren su atención."
@@ -455,6 +507,8 @@ msgstr "Si está marcado, hay nuevos mensajes que requieren su atención."
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_hr_compensation__message_has_error
 #: model:ir.model.fields,help:hr_workweek.field_hr_compensation__message_has_sms_error
+#: model:ir.model.fields,help:hr_workweek.field_hr_employee__message_has_error
+#: model:ir.model.fields,help:hr_workweek.field_hr_employee__message_has_sms_error
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__message_has_error
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
@@ -488,16 +542,10 @@ msgstr "Fecha de inicio de las horas facturadas"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_is_follower
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_is_follower
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_is_follower
 msgid "Is Follower"
 msgstr "Es un seguidor"
-
-#. module: hr_workweek
-#: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation____last_update
-#: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek____last_update
-#: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard____last_update
-msgid "Last Modified on"
-msgstr "Última modificación en"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__write_uid
@@ -544,19 +592,15 @@ msgid "Leaves count"
 msgstr "Conteo de salidas"
 
 #. module: hr_workweek
-#: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_main_attachment_id
-#: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_main_attachment_id
-msgid "Main Attachment"
-msgstr "Adjuntos principales"
-
-#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_has_error
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_has_error
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_has_error
 msgid "Message Delivery error"
 msgstr "Error de envío de mensaje"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_ids
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_ids
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_ids
 msgid "Messages"
 msgstr "Mensajes"
@@ -619,24 +663,28 @@ msgstr "Siguiente tipo de actividad"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_needaction_counter
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_needaction_counter
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_needaction_counter
 msgid "Number of Actions"
 msgstr "Número de acciones"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_has_error_counter
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_has_error_counter
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_has_error_counter
 msgid "Number of errors"
 msgstr "Número de errores"
 
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_hr_compensation__message_needaction_counter
+#: model:ir.model.fields,help:hr_workweek.field_hr_employee__message_needaction_counter
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__message_needaction_counter
 msgid "Number of messages requiring action"
 msgstr "Número de mensajes que requieren una acción"
 
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_hr_compensation__message_has_error_counter
+#: model:ir.model.fields,help:hr_workweek.field_hr_employee__message_has_error_counter
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr "Número de mensajes con error de envío"
@@ -657,9 +705,21 @@ msgid "Petition date"
 msgstr "Fecha de petición"
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Progreso"
+msgstr ""
+
+#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__progress
 msgid "Progress"
 msgstr "Progreso"
+
+#. module: hr_workweek
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__rating_ids
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__rating_ids
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__rating_ids
+msgid "Ratings"
+msgstr "Valoraciones"
 
 #. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.view_compensation_form
@@ -685,9 +745,10 @@ msgstr "Usuario responsable"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_has_sms_error
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__message_has_sms_error
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "Error de envío del SMS"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_res_config_settings__send_from_employee_id
@@ -707,7 +768,9 @@ msgstr "Enviar informe semanal de las horas trabajadas"
 #. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.res_config_settings_view_form
 msgid "Set the start date for calculating total invoiced hours and efficiency"
-msgstr "Establezca la fecha de inicio para el cálculo de las horas facturadas y la eficiencia total"
+msgstr ""
+"Establezca la fecha de inicio para el cálculo de las horas facturadas y la "
+"eficiencia total"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__date_start
@@ -761,6 +824,16 @@ msgid "Time Off"
 msgstr "Ausencias"
 
 #. module: hr_workweek
+#: model:ir.model.fields,field_description:hr_workweek.field_account_analytic_line__holiday_id
+msgid "Time Off Request"
+msgstr "Solicitud de tiempo libre"
+
+#. module: hr_workweek
+#: model:res.groups,name:hr_workweek.group_timesheet_modified_date
+msgid "Timesheet Modified Date"
+msgstr "Modificación fecha parte de horas"
+
+#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__analytic_line_ids
 msgid "Timesheets"
 msgstr "Partes de horas"
@@ -810,7 +883,6 @@ msgstr "Horas de ausencia totales"
 
 #. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.all_workweek_search
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
 msgid "Total of compensated hours"
 msgstr "Total de horas compensadas"
 
@@ -848,16 +920,18 @@ msgstr "Tipo"
 #: model:ir.model.fields,help:hr_workweek.field_hr_compensation__activity_exception_decoration
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "Tipo de actividad de excepción registrada."
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__website_message_ids
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__website_message_ids
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__website_message_ids
 msgid "Website Messages"
 msgstr "Mensajes del sitio web"
 
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_hr_compensation__website_message_ids
+#: model:ir.model.fields,help:hr_workweek.field_hr_employee__website_message_ids
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__website_message_ids
 msgid "Website communication history"
 msgstr "Historial de comunicaciones del sitio web"
@@ -876,11 +950,6 @@ msgstr "Wizard para compensación"
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hours_worked
 msgid "Worked hours"
 msgstr "Horas trabajadas"
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "Working hours info."
-msgstr "Información sobre las horas de trabajo."
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_account_analytic_line__hr_workweek_id
@@ -905,6 +974,13 @@ msgid "Workweeks settings"
 msgstr "Ajustes de las semanas de trabajo"
 
 #. module: hr_workweek
+#. odoo-python
+#: code:addons/hr_workweek/models/account_analytic_line.py:0
+#, python-format
+msgid "You can only record hours for today."
+msgstr "Sólo puedes registrar horas del día de hoy."
+
+#. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
 msgid "hr_workweek_form"
 msgstr ""
@@ -913,11 +989,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_tree
 msgid "hr_workweek_tree"
 msgstr ""
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "to"
-msgstr "hasta el"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__workweek_ids_count
