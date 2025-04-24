@@ -103,9 +103,7 @@ class HrEmployee(models.Model):
             
             employee.total_hours_worked = total_worked
             employee.total_hours_invoiced = total_invoiced
-            employee.work_efficiency = min(
-                (total_invoiced / total_worked * 100, 100) if total_worked > 0 else 0.0
-            )
+            employee.work_efficiency = min(total_invoiced / total_worked * 100, 100.0) if total_worked > 0 else 0.0
 
     def _compute_workweek_ids_count(self):
         for record in self:
