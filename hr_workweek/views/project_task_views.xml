@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_task_form2_inherited_efficiency" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.hr.timesheet.efficiency</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='project_hours']/field[@name='total_hours_spent']" position="after">
+                <span class="o_td_label float-start my-1">
+                    <label class="fw-bold" for="total_hours_invoiced" string="Total Invoiced Hours" invisible="encode_uom_in_days"/>
+                    <label class="fw-bold" for="total_hours_invoiced" string="Total Invoiced Days" invisible="not encode_uom_in_days"/>
+                </span>
+                <field name="total_hours_invoiced" widget="float_time" class="oe_subtotal_footer_separator" nolabel="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_form2_inherit_efficiency" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.efficiency</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='date_deadline_and_recurring_task']" position="after">
+                <field name="work_efficiency" widget="progressbar" options="{'max_value': 200}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
