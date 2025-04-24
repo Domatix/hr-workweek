@@ -62,6 +62,7 @@ class ResConfigSettings(models.TransientModel):
             "res.config.settings.invoiced_hours_start_date",
             fields.Date.to_string(self.invoiced_hours_start_date) if self.invoiced_hours_start_date else ""
         )
+        self.env['hr.employee'].search([])._compute_efficiency()
         return True
 
     def get_values(self):

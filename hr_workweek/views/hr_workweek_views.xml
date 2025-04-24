@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="hr_workweek_view_form" model="ir.ui.view">
         <field name="name">hr.workweek.view.form</field>
@@ -60,9 +61,10 @@
                         </group>
                         <group string="INFORMACIÓN SOBRE LAS HORAS DE TRABAJO" colspan="2">
                             <field name="hours_worked" widget="float_time" string="Horas trabajadas"/>
+                            <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours"/>
+                            <field name="work_efficiency" widget="progressbar"/>
                             <field name="hours_leave" widget="float_time" string="Horas de ausencia"/>
                             <field name="hours_to_work" widget="float_time" string="Horas a trabajar"/>
-                            <hr/>
                             <field name="hours_difference" widget="float_time" string="Diferencia de horas"/>
                             <field name="hours_compensated" widget="float_time" string="Horas compensadas"/>
                         </group>
@@ -96,8 +98,8 @@
                     widget="float_time"
                     sum="Total worked hours"
                 />
-                <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours" optional="hide"/>
-                <field name="work_efficiency" widget="progressbar" optional="hide"/>
+                <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours" optional="show"/>
+                <field name="work_efficiency" widget="progressbar" optional="show"/>
                 <field name="hours_leave" widget="float_time" sum="Total leave hours" />
                 <field
                     name="hours_to_work"

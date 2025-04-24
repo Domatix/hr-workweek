@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 11:03+0000\n"
-"PO-Revision-Date: 2025-04-09 11:03+0000\n"
+"POT-Creation-Date: 2025-04-24 10:44+0000\n"
+"PO-Revision-Date: 2025-04-24 10:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,6 +28,7 @@ msgstr ""
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_employee.py:0
 #: code:addons/hr_workweek/models/hr_employee.py:0
 #, python-format
 msgid ""
@@ -111,6 +112,7 @@ msgstr "Asignación"
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_compensation.py:0
 #: code:addons/hr_workweek/models/hr_compensation.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__allocation_count
 #, python-format
@@ -124,6 +126,7 @@ msgstr "Línea Analítica"
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #, python-format
 msgid "Analytic Lines"
@@ -163,6 +166,7 @@ msgstr "Conteo de archivos adjuntos"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__work_efficiency
+#: model:ir.model.fields,field_description:hr_workweek.field_project_task__work_efficiency
 msgid "Billing Efficiency"
 msgstr "Eficiencia de facturación"
 
@@ -193,6 +197,7 @@ msgstr "Tipo de compensación"
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__compensation_ids_count
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__hr_compensation_ids
@@ -419,6 +424,7 @@ msgstr ""
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_holidays_public_line_ids
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
@@ -579,6 +585,7 @@ msgstr "Tipo de ausencia para las compensaciones de horas extra"
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_leave_ids
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
@@ -632,6 +639,7 @@ msgstr "Nombre"
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #, python-format
 msgid "New"
@@ -692,6 +700,7 @@ msgstr "Número de mensajes con error de envío"
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_hr_employee__work_efficiency
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__work_efficiency
+#: model:ir.model.fields,help:hr_workweek.field_project_task__work_efficiency
 msgid ""
 "Percentage of worked hours that are billable (unit_amount_invoiced / "
 "unit_amount * 100)"
@@ -807,12 +816,23 @@ msgid "Sum of all unit_amount_invoiced from timesheets"
 msgstr "Suma de todos los unit_amount_invoiced de los partes de horas"
 
 #. module: hr_workweek
+#: model:ir.model.fields,help:hr_workweek.field_project_task__total_hours_invoiced
+msgid "Sum of all unit_amount_invoiced from timesheets including subtasks"
+msgstr "Suma de todos los importes unitarios facturados de las hojas de horas, incluidas las subtareas"
+
+#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_res_config_settings__summary_notification_recipient_ids
 msgid "Summary destination emails"
 msgstr "Emails destino para el resumen semanal"
 
 #. module: hr_workweek
+#: model:ir.model,name:hr_workweek.model_project_task
+msgid "Task"
+msgstr "Tarea"
+
+#. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/wizard/hr_workweek_wizard.py:0
 #: code:addons/hr_workweek/wizard/hr_workweek_wizard.py:0
 #, python-format
 msgid "The number of hours must be greater than 0."
@@ -840,9 +860,20 @@ msgstr "Partes de horas"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__total_hours_invoiced
+#: model:ir.model.fields,field_description:hr_workweek.field_project_task__total_hours_invoiced
 #: model_terms:ir.ui.view,arch_db:hr_workweek.view_employee_form_view_inherit
 msgid "Total Invoiced"
 msgstr "Total facturado"
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.view_task_form2_inherited_efficiency
+msgid "Total Invoiced Days"
+msgstr "Total de días facturados"
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.view_task_form2_inherited_efficiency
+msgid "Total Invoiced Hours"
+msgstr "Total de horas facturadas"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__total_hours_worked
@@ -872,6 +903,7 @@ msgid "Total hours invoiced in the week"
 msgstr "Total de horas facturadas en la semana"
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_tree
 msgid "Total invoiced hours"
 msgstr "Total de horas facturadas"
@@ -975,6 +1007,7 @@ msgstr "Ajustes de las semanas de trabajo"
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/account_analytic_line.py:0
 #: code:addons/hr_workweek/models/account_analytic_line.py:0
 #, python-format
 msgid "You can only record hours for today."
@@ -1006,6 +1039,7 @@ msgstr ""
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_employee.py:0
 #: code:addons/hr_workweek/models/hr_employee.py:0
 #, python-format
 msgid "{}'s compensations"
@@ -1013,6 +1047,7 @@ msgstr "Compensaciones de {}"
 
 #. module: hr_workweek
 #. odoo-python
+#: code:addons/hr-workweek/hr_workweek/models/hr_employee.py:0
 #: code:addons/hr_workweek/models/hr_employee.py:0
 #, python-format
 msgid "{}'s workweeks"
