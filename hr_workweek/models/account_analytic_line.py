@@ -20,7 +20,6 @@ class AccountAnalyticLine(models.Model):
     def create(self, vals):
         today = fields.Date.context_today(self)
         date_val = vals.get('date_imputable')
-        import pdb; pdb.set_trace()
         if isinstance(date_val, str):
             date_val = datetime.strptime(date_val, "%Y-%m-%d").date()
         if date_val != today:
