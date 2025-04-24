@@ -128,6 +128,35 @@ class HrWorkweek(models.Model):
         string="Compensations count", compute="_compute_count"
     )
 
+    unit_amount_invoiced = fields.Float(
+        string="Invoiced Hours",
+        compute="_compute_unit_amount_invoiced",
+        store=True,
+        help="Total hours invoiced in the week"
+    )
+    
+    work_efficiency = fields.Float(
+        string="Efficiency",
+        compute="_compute_work_efficiency",
+        store=True,
+        help="Percentage of worked hours that are billable (unit_amount_invoiced / unit_amount * 100)"
+    )
+
+    @api.depends('account_analytic_line_ids.unit_amount_invoiced')
+    def _compute_unit_amount_invoiced(self):
+        for week in self:
+            week.unit_amount_invoiced = sum(
+                week.account_analytic_line_ids.mapped('unit_amount_invoiced')
+            )
+
+    @api.depends('hours_worked', 'unit_amount_invoiced')
+    def _compute_work_efficiency(self):
+        for week in self:
+            if week.unit_amount_invoiced > 0:
+                week.work_efficiency = (week.unit_amount_invoiced / week.hours_worked) * 100
+            else:
+                week.work_efficiency = 0.0
+
     @api.model
     def create(self, vals):
         vals["name"] = self.env["ir.sequence"].next_by_code("hr.workweek") or _("New")

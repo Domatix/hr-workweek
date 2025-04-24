@@ -10,6 +10,7 @@
         "hr_timesheet",
         "hr_employee_calendar_planning",
         "hr_holidays_public",
+        "task_hr_timesheet_report"
     ],
     "data": [
         "security/ir.model.access.csv",

@@ -67,6 +67,20 @@
                         </div>
                     </div>
                 </div>
+                <h2>Invoiced Hours Settings</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="invoiced_hours_start_date" class="mr-3"/>
+                            <field name="invoiced_hours_start_date"/>
+                            <div class="text-muted">
+                                Set the start date for calculating total invoiced hours and efficiency
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>

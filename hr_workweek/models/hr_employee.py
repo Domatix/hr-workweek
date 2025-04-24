@@ -38,13 +38,65 @@ class HrEmployee(models.Model):
 
     current_workweek = fields.Many2one(comodel_name="hr.workweek")
 
+    analytic_line_ids = fields.One2many(
+        'account.analytic.line',
+        'employee_id',
+        string="Timesheets",
+        help="All timesheet entries linked to this employee"
+    )
+
+    total_hours_worked = fields.Float(
+        string="Total Worked",
+        compute="_compute_efficiency",
+        store=True,
+        help="Sum of all unit_amount from timesheets"
+    )
+    
+    total_hours_invoiced = fields.Float(
+        string="Total Invoiced",
+        compute="_compute_efficiency",
+        store=True,
+        help="Sum of all unit_amount_invoiced from timesheets"
+    )
+    
+    work_efficiency = fields.Float(
+        string="Billing Efficiency",
+        compute="_compute_efficiency",
+        store=True,
+        help="Percentage of worked hours that are billable (unit_amount_invoiced / unit_amount * 100)"
+    )
+
+    invoiced_hours_start_date_str = fields.Date(
+        compute="_compute_invoiced_hours_start_date_str",
+        store=False,
+        string="Invoiced Hours Start Date"
+    )
+
+    def _compute_invoiced_hours_start_date_str(self):
+        for employee in self:
+            start_date = self.env['ir.default'].get('res.config.settings', 'invoiced_hours_start_date')
+            employee.invoiced_hours_start_date_str = str(start_date) if start_date else ""
+
+    @api.depends('analytic_line_ids.unit_amount', 'analytic_line_ids.unit_amount_invoiced')
+    def _compute_efficiency(self):
+        start_date = self.env['ir.default'].get('res.config.settings', 'invoiced_hours_start_date')
+        domain = [('employee_id', 'in', self.ids), ('project_id', '!=', False)]
+        if start_date:
+            domain.append(('date', '>=', start_date))
+        timesheets = self.env['account.analytic.line'].search(domain)
+        for employee in self:
+            emp_timesheets = timesheets.filtered(lambda t: t.employee_id == employee)
+            total_worked = sum(emp_timesheets.mapped('unit_amount'))
+            total_invoiced = sum(emp_timesheets.mapped('unit_amount_invoiced'))
+            employee.total_hours_worked = total_worked
+            employee.total_hours_invoiced = total_invoiced
+            employee.work_efficiency = min((total_invoiced / total_worked * 100, 100) if total_worked > 0 else 0.0)
+
     def _compute_workweek_ids_count(self):
         for record in self:
             record.workweek_ids_count = len(record.hr_workweek_ids)
 
-    @api.depends(
-        "hr_workweek_ids.hours_difference", "hr_workweek_ids.hours_compensated"
-    )
+    @api.depends("hr_workweek_ids.hours_difference", "hr_workweek_ids.hours_compensated")
     def _compute_hours_difference(self):
         for record in self:
             hours_difference = sum(record.hr_workweek_ids.mapped("hours_difference"))

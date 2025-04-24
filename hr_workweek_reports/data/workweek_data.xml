@@ -17,7 +17,10 @@
                     you have worked <t
                         t-out="object.current_workweek.hours_worked"
                     /> hours of
-                    <t t-out="object.current_workweek.hours_to_work" /></p>
+                    <t t-out="object.current_workweek.hours_to_work" />,
+                    with <t t-out="object.current_workweek.unit_amount_invoiced" /> invoiced hours
+                    (<t t-out="round(object.current_workweek.work_efficiency, 2)" />% efficiency).
+                </p>
 
                 <p>Taking into account your past workweeks,
                     <t t-if="object.hours_difference &gt; 0">
@@ -43,7 +46,7 @@
             </field>
         </record>
 
-        <record id="hours_worked_summary_email_template" model="mail.template">
+       <record id="hours_worked_summary_email_template" model="mail.template">
             <field name="name">Weekly summary report of worked hours</field>
             <field name="subject">Weekly summary report of worked hours</field>
             <field name="lang">{{object.user_id.partner_id.lang}}</field>
@@ -52,119 +55,78 @@
                 <div>
                     <style>
                         table, th, td {
-                            border: border: 1px solid #ddd;padding: 8px;
+                            border: 1px solid #ddd;
+                            padding: 8px;
                         }
                     </style>
-                    <t
-                        t-set="calendars"
-                        t-value="ctx.get('calendars')"
-                    />
+                    <t t-set="calendars" t-value="ctx.get('calendars')"/>
                     <t t-foreach="calendars" t-as="calendar">
-                        <h2
-                            style="
-                                padding-top: 12px;
-                                padding-bottom: 12px;
-                                text-align: left;
-                                background-color: white;
-                                color: #8595bf;"
-                        >
-                                <t t-out="calendar.name" />
+                        <h2 style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: white; color: #8595bf;">
+                            <t t-out="calendar.name"/>
                         </h2>
-                        <table
-                            style="
-                            font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
-                            border-collapse: collapse;
-                            width: 100%;"
-                        >
-                            <thead
-                                style="
-                                padding-top: 12px;
-                                padding-bottom: 12px;
-                                text-align: left;
-                                background-color: #8595bf;
-                                color: white;"
-                            >
+                        <table style="font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; border-collapse: collapse; width: 100%;">
+                            <thead style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #8595bf; color: white;">
                                 <tr style="text-align: left;">
                                     <th>Employee</th>
                                     <th>Hours worked</th>
+                                    <th>Invoiced hours</th>
+                                    <th>Efficiency</th>
                                     <th>Difference</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <t
-                                    t-foreach="ctx.get('employees_by_calendar').get(calendar.id, [])"
-                                    t-as="employee"
-                                >
+                                <t t-foreach="ctx.get('employees_by_calendar').get(calendar.id, [])" t-as="employee">
                                     <tr style="text-align: left;">
+                                        <td><span t-field="employee.name"/></td>
+                                        <td><span t-field="employee.current_workweek.hours_worked"/></td>
                                         <td>
-                                            <span t-field="employee.name" />
+                                            <span t-out="sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced'))"/>
                                         </td>
-                                        <td>
-                                            <span
-                                                t-field="employee.current_workweek.hours_worked"
-                                            />
+                                        <td t-att-style="'background-color: %s' % (
+                                            '#ef9a9a' if ((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked &gt; 0 else 0) &lt; 50 else
+                                            '#ffff52' if ((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked &gt; 0 else 0) &lt; 75 else '#69f0ae')">
+                                            <span t-out="round((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked > 0 else 0, 2)"/>%
                                         </td>
-                                        <td
-                                            t-att-style="'background-color: %s' % ('#ef9a9a' if employee.current_workweek.hours_difference &gt; 0 else
-                                                                                    '#93c2e5' if employee.current_workweek.hours_difference &lt; 0 else '#69f0ae')">
-                                            <span
-                                                t-field="employee.current_workweek.hours_difference"
-                                            />
+                                        <td t-att-style="'background-color: %s' % ('#ef9a9a' if employee.current_workweek.hours_difference &gt; 0 else '#93c2e5' if employee.current_workweek.hours_difference &lt; 0 else '#69f0ae')">
+                                            <span t-field="employee.current_workweek.hours_difference"/>
                                         </td>
-                                        <td
-                                            t-att-style="'background-color: %s' % ('#ef9a9a' if employee.hours_difference &gt; 0 else
-                                                                                    '#93c2e5' if employee.hours_difference &lt; 0 else '#69f0ae')">
-                                            <span t-field="employee.hours_difference" />
+                                        <td t-att-style="'background-color: %s' % ('#ef9a9a' if employee.hours_difference > 0 else '#93c2e5' if employee.hours_difference &lt; 0 else '#69f0ae')">
+                                            <span t-field="employee.hours_difference"/>
                                         </td>
                                     </tr>
                                 </t>
                             </tbody>
                         </table>
                     </t>
-                    <h3
-                        style="
-                            padding-top: 12px;
-                            padding-bottom: 12px;
-                            text-align: left;
-                            background-color: white;
-                            color: #8595bf;"
-                    >
-                            Legend
+                    <h3 style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: white; color: #8595bf;">
+                        Legend
                     </h3>
-                    <table
-                        style="
-                            font-family: 'Trebuchet MS',
-                            Arial,
-                            Helvetica,
-                            sans-serif;
-                            border-collapse: collapse;
-                            width: 100%;"
-                    >
+                    <table style="font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; border-collapse: collapse; width: 100%;">
                         <tbody>
                             <tr style="text-align: left;">
-                                <th style="background-color: #ef9a9a">
-                                    Due hours
-                                </th>
-                                <th>
-                                    The employee has worked less than they should've
-                                </th>
+                                <th style="background-color: #ef9a9a">Low efficiency (&lt;50%)</th>
+                                <th>Less than half of worked hours are invoiced</th>
                             </tr>
                             <tr style="text-align: left;">
-                                <th style="background-color: #93c2e5">
-                                    Overtime hours
-                                </th>
-                                <th>
-                                    The employee has worked more than they should've
-                                </th>
+                                <th style="background-color: #ffff52">Medium efficiency (50-75%)</th>
+                                <th>Between 50-75% of worked hours are invoiced</th>
                             </tr>
                             <tr style="text-align: left;">
-                                <th style="background-color: #69f0ae">
-                                    Cool hours
-                                </th>
-                                <th>
-                                    The employee has worked the exact amount they should've
-                                </th>
+                                <th style="background-color: #69f0ae">High efficiency (&gt;75%)</th>
+                                <th>More than 75% of worked hours are invoiced</th>
+                            </tr>
+                            <tr style="text-align: left;">
+                                <th style="background-color: #ef9a9a">Due hours</th>
+                                <th>The employee has worked less than they should've</th>
+                            </tr>
+                            <tr style="text-align: left;">
+                                <th style="background-color: #69f0ae">Overtime hours</th>
+                                <th>The employee has worked more than they should've</th>
+                            </tr>
+                            <tr style="text-align: left;">
+                                <th style="background-color: #93c2e5">Cool hours</th>
+                                <th>The employee has worked the exact amount they should've</th>
                             </tr>
                         </tbody>
                     </table>

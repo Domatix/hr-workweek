@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from datetime import datetime
 
 
 class ResConfigSettings(models.TransientModel):
@@ -24,31 +25,44 @@ class ResConfigSettings(models.TransientModel):
         comodel_name="hr.employee", string="Send from", required=False
     )
 
+    invoiced_hours_start_date = fields.Date(
+        string="Invoiced Hours Start Date",
+        help="Date from which to calculate invoiced hours and efficiency"
+    )
+
     def set_values(self):
         super().set_values()
         ir_default = self.env["ir.default"].sudo()
         leave_type = self.hr_leave_type or self.env.ref(
             "hr_holidays.holiday_status_comp"
         )
-        ir_default.set("res.config.settings", "hr_leave_type", leave_type.id)
+        ir_default.set(
+            "res.config.settings", "hr_leave_type",
+            leave_type.id
+        )
         ir_default.set(
             "res.config.settings",
             "summary_notification_recipient_ids",
             self.summary_notification_recipient_ids.ids,
         )
         ir_default.set(
-            "res.config.settings", "send_mail_notification", self.send_mail_notification
+            "res.config.settings", "send_mail_notification",
+            self.send_mail_notification
         )
         ir_default.set(
             "res.config.settings",
             "excluded_calendar_ids",
             self.excluded_calendar_ids.ids,
         )
-
         ir_default.set(
             "res.config.settings",
             "send_from_employee_id",
             self.send_from_employee_id.id,
+        )
+        ir_default.set(
+            "res.config.settings",
+            "invoiced_hours_start_date",
+            fields.Date.to_string(self.invoiced_hours_start_date) if self.invoiced_hours_start_date else ""
         )
         return True
 
@@ -71,6 +85,9 @@ class ResConfigSettings(models.TransientModel):
                 "send_from_employee_id": ir_default.get(
                     "res.config.settings", "send_from_employee_id"
                 ),
+                "invoiced_hours_start_date": fields.Date.to_date(ir_default.get(
+                    "res.config.settings", "invoiced_hours_start_date"
+                )) if ir_default.get("res.config.settings", "invoiced_hours_start_date") else ""
             },
         )
         return res
