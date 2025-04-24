@@ -10,9 +10,11 @@
         "hr_timesheet",
         "hr_employee_calendar_planning",
         "hr_holidays_public",
+        "task_hr_timesheet_report"
     ],
     "data": [
         "security/ir.model.access.csv",
+        'security/security_groups.xml',
         "wizard/hr_workweek_wizard_views.xml",
         "views/hr_employee_views.xml",
         "views/hr_workweek_views.xml",

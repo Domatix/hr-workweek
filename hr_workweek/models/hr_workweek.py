@@ -17,7 +17,9 @@ class HrWorkweek(models.Model):
 
     description = fields.Text()
 
-    employee_id = fields.Many2one(comodel_name="hr.employee", required=True)
+    employee_id = fields.Many2one(
+        comodel_name="hr.employee", required=True
+    )
 
     date_start = fields.Date(
         string="Start date",
@@ -48,7 +50,9 @@ class HrWorkweek(models.Model):
         relation="leave_workweek_rel",
     )
 
-    hr_leaves_count = fields.Integer(string="Leaves count", compute="_compute_count")
+    hr_leaves_count = fields.Integer(
+        string="Leaves count", compute="_compute_count"
+    )
 
     hr_holidays_public_line_ids = fields.Many2many(
         comodel_name="hr.holidays.public.line",
@@ -106,6 +110,7 @@ class HrWorkweek(models.Model):
         "document shows",
         required=False,
     )
+
     hours_difference = fields.Float(
         string="Hours difference",
         default=0.0,
@@ -114,6 +119,7 @@ class HrWorkweek(models.Model):
         "If negative, you've worked beyond what you should've",
         store=True,
     )
+
     progress = fields.Float(
         compute="_compute_progress",
     )
@@ -127,6 +133,35 @@ class HrWorkweek(models.Model):
     compensation_count = fields.Integer(
         string="Compensations count", compute="_compute_count"
     )
+
+    unit_amount_invoiced = fields.Float(
+        string="Invoiced Hours",
+        compute="_compute_unit_amount_invoiced",
+        store=True,
+        help="Total hours invoiced in the week"
+    )
+
+    work_efficiency = fields.Float(
+        string="Efficiency",
+        compute="_compute_work_efficiency",
+        store=True,
+        help="Percentage of worked hours that are billable (unit_amount_invoiced / unit_amount * 100)"
+    )
+
+    @api.depends('account_analytic_line_ids.unit_amount_invoiced')
+    def _compute_unit_amount_invoiced(self):
+        for week in self:
+            week.unit_amount_invoiced = sum(
+                week.account_analytic_line_ids.mapped('unit_amount_invoiced')
+            )
+
+    @api.depends('hours_worked', 'unit_amount_invoiced')
+    def _compute_work_efficiency(self):
+        for week in self:
+            if week.unit_amount_invoiced > 0:
+                week.work_efficiency = (week.unit_amount_invoiced / week.hours_worked) * 100
+            else:
+                week.work_efficiency = 0.0
 
     @api.model
     def create(self, vals):
