@@ -19,6 +19,7 @@
         "views/hr_employee_views.xml",
         "views/hr_workweek_views.xml",
         "views/res_config_settings.xml",
+        "views/project_task_views.xml",
         "views/hr_compensation_views.xml",
         "data/ir_sequence_data.xml",
         "data/workweek_data.xml",

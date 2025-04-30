@@ -1,6 +1,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from datetime import date
+from datetime import datetime
 
 
 class AccountAnalyticLine(models.Model):
@@ -19,7 +19,10 @@ class AccountAnalyticLine(models.Model):
     @api.model
     def create(self, vals):
         today = fields.Date.context_today(self)
-        if vals['date'] != today:
+        date_val = vals.get('date_imputable')
+        if isinstance(date_val, str):
+            date_val = datetime.strptime(date_val, "%Y-%m-%d").date()
+        if date_val != today:
             if not self.env.user.has_group('hr_workweek.group_timesheet_modified_date'):
                 raise UserError(_("You can only record hours for today."))
         res = super().create(vals)
