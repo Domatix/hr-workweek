@@ -61,6 +61,7 @@
                     </style>
                     <t t-set="calendars" t-value="ctx.get('calendars')"/>
                     <t t-foreach="calendars" t-as="calendar">
+                        <t t-set="employees" t-value="ctx.get('employees_by_calendar').get(calendar.id, [])"/>
                         <h2 style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: white; color: #8595bf;">
                             <t t-out="calendar.name"/>
                         </h2>
@@ -76,7 +77,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="ctx.get('employees_by_calendar').get(calendar.id, [])" t-as="employee">
+                                <t t-foreach="employees" t-as="employee">
                                     <tr style="text-align: left;">
                                         <td><span t-field="employee.name"/></td>
                                         <td><span t-field="employee.current_workweek.hours_worked"/></td>

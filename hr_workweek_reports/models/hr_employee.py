@@ -1,6 +1,7 @@
 from odoo import api, models
 
-
+import logging
+_logger = logging.getLogger(__name__)
 class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
@@ -38,9 +39,9 @@ class HrEmployee(models.Model):
                     [("id","not in",excluded_calendars)]
                 )
                 employees_by_calendar = {
-                    calendar.id: self.env["hr.employee"].sudo().search(
+                    calendar.id: list(self.env["hr.employee"].sudo().search(
                         [("resource_calendar_id", "=", calendar.id)]
-                    )
+                    ))
                     for calendar in allowed_calendars
                 }
                 recipient_ids = ir_config.get_param("res.config.settings.summary_notification_recipient_ids", default="").split(",")
@@ -49,6 +50,9 @@ class HrEmployee(models.Model):
                 )
                 send_from_employee_id = int(ir_config.get_param("res.config.settings.send_from_employee_id", default=0))
                 send_from_employee = self.env["hr.employee"].browse(send_from_employee_id)
+                 # Log del contexto completo
+                _logger.info("Contexto que se pasará al template: calendars = %s", allowed_calendars)
+                _logger.info("Contexto employees_by_calendar keys: %s", list(employees_by_calendar.values()))
                 for allowed_employee in allowed_employees:
                     template.with_context(
                         calendars=allowed_calendars,
