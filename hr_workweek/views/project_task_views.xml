@@ -21,7 +21,19 @@
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@id='date_deadline_and_recurring_task']" position="after">
-                <field name="work_efficiency" widget="progressbar" options="{'max_value': 200}"/>
+                <field name="work_efficiency" widget="progressbar" options="{'max_value': 999}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_tree_invoiced_inherit" model="ir.ui.view">
+        <field name="name">project.task.tree.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="hr_timesheet.view_task_tree2_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='progress'][@widget='project_task_progressbar']" position="after">
+                <field name="total_hours_invoiced" widget="float_time"/>
+                <field name="work_efficiency" widget="progressbar" options="{'max_value': 999}"/>
             </xpath>
         </field>
     </record>
