@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-24 10:44+0000\n"
-"PO-Revision-Date: 2025-04-24 10:44+0000\n"
+"POT-Creation-Date: 2025-05-27 11:19+0000\n"
+"PO-Revision-Date: 2025-05-27 11:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,16 +19,33 @@ msgstr ""
 #: model:mail.template,body_html:hr_workweek.assignment_email_template
 msgid ""
 "<p>Hello <t t-out=\"object.responsible_id.name\"></t>,</p>\n"
-"                <p><t t-out=\"object.employee_id.name\"></t>'s compensation <t t-out=\"object.name\"></t> has been assigned to you.</p>\n"
+"                <p>\n"
+"                    The compensation of<t t-out=\"object.employee_id.name\"></t> \n"
+"                    <t t-out=\"object.name\"></t> has been assigned to you.\n"
+"                </p>\n"
+"                <t t-set=\"base_url\" t-value=\"object.env['ir.config_parameter'].sudo().get_param('web.base.url')\"></t>\n"
+"                <p>\n"
+"                    <a t-attf-href=\"{{ base_url }}/web?#id={{ object.id }}&amp;model=hr.compensation&amp;view_type=form\" style=\" background-color:#875A7B; padding:8px 16px; text-decoration:none; color:#fff; border-radius:5px; display:inline-block;\">\n"
+"                        View Compensation\n"
+"                    </a>\n"
+"                </p>\n"
 "            "
 msgstr ""
-"<data><p>Hola <t t-out=\"object.responsible_id.name\" />,</p>\n"
-"                <p>La petición de compensación <t t-out=\"object.name\" /> de <t t-out=\"object.employee_id.name\" />  te ha sido asignada.</p>\n"
-"            </data>"
+"<p>Hola <t t-out=\"object.responsible_id.name\"></t>,</p>\n"
+"                <p>\n"
+"                    La compensación de <t t-out=\"object.employee_id.name\"></t> \n"
+"                    <t t-out=\"object.name\"></t> Te ha sido asignada.\n"
+"                </p>\n"
+"                <t t-set=\"base_url\" t-value=\"object.env['ir.config_parameter'].sudo().get_param('web.base.url')\"></t>\n"
+"                <p>\n"
+"                    <a t-attf-href=\"{{ base_url }}/web?#id={{ object.id }}&amp;model=hr.compensation&amp;view_type=form\" style=\" background-color:#875A7B; padding:8px 16px; text-decoration:none; color:#fff; border-radius:5px; display:inline-block;\">\n"
+"                        Ver compensación\n"
+"                    </a>\n"
+"                </p>\n"
+"            "
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_employee.py:0
 #: code:addons/hr_workweek/models/hr_employee.py:0
 #, python-format
 msgid ""
@@ -112,7 +129,6 @@ msgstr "Asignación"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_compensation.py:0
 #: code:addons/hr_workweek/models/hr_compensation.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__allocation_count
 #, python-format
@@ -126,7 +142,6 @@ msgstr "Línea Analítica"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #, python-format
 msgid "Analytic Lines"
@@ -197,7 +212,6 @@ msgstr "Tipo de compensación"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__compensation_ids_count
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__hr_compensation_ids
@@ -353,6 +367,16 @@ msgid "Employee Calendar"
 msgstr "Horario del Empleado"
 
 #. module: hr_workweek
+#: model:ir.actions.server,name:hr_workweek.ir_cron_employee_notification_ir_actions_server
+msgid "Employee weekly notification"
+msgstr "Notificación semanal al empleado"
+
+#. module: hr_workweek
+#: model:ir.actions.server,name:hr_workweek.ir_cron_employees_summary_notification_ir_actions_server
+msgid "Employees weekly summary notification"
+msgstr "Notificación de resumen semanal para empleados"
+
+#. module: hr_workweek
 #: model:ir.actions.server,name:hr_workweek.ir_cron_create_workweek_ir_actions_server
 msgid "Employees workweek creation"
 msgstr "Creación de las semanas de trabajo"
@@ -424,7 +448,6 @@ msgstr ""
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_holidays_public_line_ids
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
@@ -585,7 +608,6 @@ msgstr "Tipo de ausencia para las compensaciones de horas extra"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_leave_ids
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
@@ -639,7 +661,6 @@ msgstr "Nombre"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_workweek.py:0
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #, python-format
 msgid "New"
@@ -818,7 +839,9 @@ msgstr "Suma de todos los unit_amount_invoiced de los partes de horas"
 #. module: hr_workweek
 #: model:ir.model.fields,help:hr_workweek.field_project_task__total_hours_invoiced
 msgid "Sum of all unit_amount_invoiced from timesheets including subtasks"
-msgstr "Suma de todos los importes unitarios facturados de las hojas de horas, incluidas las subtareas"
+msgstr ""
+"Suma de todos los importes unitarios facturados de las hojas de horas, "
+"incluidas las subtareas"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_res_config_settings__summary_notification_recipient_ids
@@ -832,7 +855,6 @@ msgstr "Tarea"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/wizard/hr_workweek_wizard.py:0
 #: code:addons/hr_workweek/wizard/hr_workweek_wizard.py:0
 #, python-format
 msgid "The number of hours must be greater than 0."
@@ -1007,7 +1029,6 @@ msgstr "Ajustes de las semanas de trabajo"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/account_analytic_line.py:0
 #: code:addons/hr_workweek/models/account_analytic_line.py:0
 #, python-format
 msgid "You can only record hours for today."
@@ -1039,7 +1060,6 @@ msgstr ""
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_employee.py:0
 #: code:addons/hr_workweek/models/hr_employee.py:0
 #, python-format
 msgid "{}'s compensations"
@@ -1047,7 +1067,6 @@ msgstr "Compensaciones de {}"
 
 #. module: hr_workweek
 #. odoo-python
-#: code:addons/hr-workweek/hr_workweek/models/hr_employee.py:0
 #: code:addons/hr_workweek/models/hr_employee.py:0
 #, python-format
 msgid "{}'s workweeks"

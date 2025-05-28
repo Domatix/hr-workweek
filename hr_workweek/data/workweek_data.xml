@@ -16,10 +16,20 @@
             <field name="auto_delete" eval="False" />
             <field name="lang">{{object.employee_id.user_id.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <p>Hello <t t-out="object.responsible_id.name" />,</p>
-                <p><t t-out="object.employee_id.name" />'s compensation <t
-                        t-out="object.name"
-                    /> has been assigned to you.</p>
+                <p>Hello <t t-out="object.responsible_id.name"/>,</p>
+                <p>
+                    The compensation of<t t-out="object.employee_id.name"/> 
+                    <t t-out="object.name"/> has been assigned to you.
+                </p>
+                <t t-set="base_url"
+                    t-value="object.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                <p>
+                    <a
+                    t-attf-href="{{ base_url }}/web?#id={{ object.id }}&amp;model=hr.compensation&amp;view_type=form"
+                    style=" background-color:#875A7B; padding:8px 16px; text-decoration:none; color:#fff; border-radius:5px; display:inline-block;">
+                        View Compensation
+                    </a>
+                </p>
             </field>
         </record>
     </data>
