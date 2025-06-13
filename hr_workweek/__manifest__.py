@@ -25,6 +25,12 @@
         "data/workweek_data.xml",
         "data/ir_cron.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "hr_workweek/static/src/js/efficiency_color.js",
+            "hr_workweek/static/src/css/efficiency_color.css",
+        ],
+    },
     "application": True,
     "installable": True,
     "license": "AGPL-3",
