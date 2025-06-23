@@ -122,11 +122,11 @@
                                 <th>The employee has worked less than they should've</th>
                             </tr>
                             <tr style="text-align: left;">
-                                <th style="background-color: #69f0ae">Overtime hours</th>
+                                <th style="background-color: #93c2e5">Overtime hours</th>
                                 <th>The employee has worked more than they should've</th>
                             </tr>
                             <tr style="text-align: left;">
-                                <th style="background-color: #93c2e5">Cool hours</th>
+                                <th style="background-color: #69f0ae">Cool hours</th>69f0ae
                                 <th>The employee has worked the exact amount they should've</th>
                             </tr>
                         </tbody>
