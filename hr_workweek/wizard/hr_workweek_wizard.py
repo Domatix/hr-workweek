@@ -52,11 +52,7 @@ class HrWorkweekWizard(models.TransientModel):
         if self.compensation_amount <= 0:
             raise UserError(_("The number of hours must be greater than 0."))
         elif self.compensation_amount > self.compensation_amount_max:
-            raise UserError(
-                _(
-                    f"You can't compensate more than {self.compensation_amount_max} hours"
-                )
-            )
+            raise UserError(_("You can't compensate more than %(max_hours)s hours")% {"max_hours": self.compensation_amount_max})
         else:
             compensation_id = employee._action_compensate(
                 self.compensation_amount,
