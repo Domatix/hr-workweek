@@ -151,9 +151,7 @@ class HrEmployee(models.Model):
             "context": self.env.context,
         }
 
-    def _action_compensate(
-        self, amount, compensation_type, description, responsible_id
-    ):
+    def _action_compensate(self, amount, compensation_type, description, responsible_id):
         vals = {
             "employee_id": self.id,
             "state": "draft",
