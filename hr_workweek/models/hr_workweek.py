@@ -325,7 +325,7 @@ class HrWorkweek(models.Model):
     def action_view_analytic_lines(self):
         return {
             "name": _("Analytic Lines"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.analytic.line",
             "type": "ir.actions.act_window",
             "domain": [("id", "in", self.account_analytic_line_ids.ids)],
@@ -335,7 +335,7 @@ class HrWorkweek(models.Model):
     def action_view_compensations(self):
         return {
             "name": _("Compensations"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "hr.compensation",
             "type": "ir.actions.act_window",
             "domain": [("id", "in", self.compensation_ids.ids)],
@@ -345,7 +345,7 @@ class HrWorkweek(models.Model):
     def action_view_leaves(self):
         return {
             "name": _("Leaves"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "hr.leave",
             "type": "ir.actions.act_window",
             "domain": [("id", "in", self.hr_leave_ids.ids)],
@@ -355,7 +355,7 @@ class HrWorkweek(models.Model):
     def action_view_public_holidays(self):
         return {
             "name": _("Holidays"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "hr.holidays.public.line",
             "type": "ir.actions.act_window",
             "domain": [("id", "in", self.hr_holidays_public_line_ids.ids)],
