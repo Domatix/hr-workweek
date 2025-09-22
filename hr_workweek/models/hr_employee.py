@@ -133,7 +133,7 @@ class HrEmployee(models.Model):
         return {
             "name": _("{}'s workweeks").format(self.name),
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "hr.workweek",
             "type": "ir.actions.act_window",
             "domain": [("id", "in", self.hr_workweek_ids.ids)],
@@ -144,7 +144,7 @@ class HrEmployee(models.Model):
         return {
             "name": _("{}'s compensations").format(self.name),
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "hr.compensation",
             "type": "ir.actions.act_window",
             "domain": [("id", "in", self.hr_compensation_ids.ids)],

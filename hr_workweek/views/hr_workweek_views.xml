@@ -83,7 +83,7 @@
         <field name="name">hr.workweek.view.tree</field>
         <field name="model">hr.workweek</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 string="hr_workweek_tree"
                 decoration-danger="hours_difference==hours_to_work if hours_to_work &gt; 0 else hours_difference &gt; 0"
                 decoration-success="hours_difference&lt;=0.01"
@@ -116,7 +116,7 @@
                     widget="float_time"
                     sum="Total compensated hours"
                 />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -166,14 +166,14 @@
         <field name="name">Workweeks</field>
         <field name="res_model">hr.workweek</field>
         <field name="search_view_id" ref="all_workweek_search" />
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <record id="my_hr_workweek_act_window" model="ir.actions.act_window">
         <field name="name">My workweeks</field>
         <field name="domain">[('employee_id.user_id', '=', uid)]</field>
         <field name="res_model">hr.workweek</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem
