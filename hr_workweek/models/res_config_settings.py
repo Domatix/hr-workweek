@@ -10,23 +10,18 @@ class ResConfigSettings(models.TransientModel):
         string="Leave type for compensations",
         default=lambda self: self.env.ref("hr_holidays.holiday_status_comp", False),
     )
-
     send_mail_notification = fields.Boolean(
         default=True, string="Send mail"
     )
-
     summary_notification_recipient_ids = fields.Many2many(
         comodel_name="hr.employee", string="Summary destination emails"
     )
-
     excluded_calendar_ids = fields.Many2many(
         comodel_name="resource.calendar", string="Excluded calendars"
     )
-
     send_from_employee_id = fields.Many2one(
         comodel_name="hr.employee", string="Send from", required=False
     )
-
     invoiced_hours_start_date = fields.Date(
         string="Invoiced Hours Start Date",
         help="Date from which to calculate invoiced hours and efficiency"

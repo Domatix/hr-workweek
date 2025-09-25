@@ -52,29 +52,25 @@
                         </h1>
                     </div>
                     <group>
-                        <group string="INFORMACIÓN GENERAL" colspan="2">
+                        <group string="General information" colspan="2">
                             <field name="date_start" string="Desde" options="{'related_end_date': 'date_end'}"/>
                             <field name="date_end" string="Hasta" options="{'related_start_date': 'date_start'}"/>
                             <field name="employee_id" string="Empleado"/>
-                            <field name="progress" widget="progressbar" string="Progreso"/>
+                            <field name="progress" widget="progressbar" string="Progress"/>
                             <field name="description" string="Descripción"/>
                         </group>
-                        <group string="INFORMACIÓN SOBRE LAS HORAS DE TRABAJO" colspan="2">
-                            <field name="hours_worked" widget="float_time" string="Horas trabajadas"/>
+                        <group string="infromation on working hours" colspan="2">
+                            <field name="hours_worked" widget="float_time" string="Hours Worked"/>
                             <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours"/>
                             <field name="work_efficiency" widget="progressbar"/>
-                            <field name="hours_leave" widget="float_time" string="Horas de ausencia"/>
-                            <field name="hours_to_work" widget="float_time" string="Horas a trabajar"/>
-                            <field name="hours_difference" widget="float_time" string="Diferencia de horas"/>
-                            <field name="hours_compensated" widget="float_time" string="Horas compensadas"/>
+                            <field name="hours_leave" widget="float_time" string="Leave Hours"/>
+                            <field name="hours_to_work" widget="float_time" string="HHours to Work"/>
+                            <field name="hours_difference" widget="float_time" string="Hours Difference"/>
+                            <field name="hours_compensated" widget="float_time" string="Compensated Hours"/>
                         </group>
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers" />
-                    <field name="activity_ids" widget="mail_activity" />
-                    <field name="message_ids" widget="mail_thread" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
