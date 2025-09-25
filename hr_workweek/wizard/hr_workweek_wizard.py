@@ -7,7 +7,6 @@ class HrWorkweekWizard(models.TransientModel):
     _description = "Wizard for compensation"
 
     compensation_description = fields.Text(string="Description", required=False)
-
     compensation_type = fields.Selection(
         string="Compensation type",
         selection=[("economic", "Economic"), ("leave", "Leave days")],
@@ -29,13 +28,12 @@ class HrWorkweekWizard(models.TransientModel):
         required=True,
         default=_default_compensation_amount,
     )
-
     compensation_amount_max = fields.Float(
-        string="Hours to compensate",
+        string="Max hours to compensate",
         default=_default_compensation_amount,
         readonly=True,
     )
-
+    
     def _default_responsible_id(self):
         employee_id = self.env["hr.employee"].browse(self.env.context.get("active_id"))
         return employee_id.parent_id.id or employee_id.id

@@ -14,6 +14,7 @@
             </list>
         </field>
     </record>
+    
     <record id="view_compensation_form" model="ir.ui.view">
         <field name="name">HR Compensation form</field>
         <field name="model">hr.compensation</field>
@@ -75,20 +76,18 @@
                         <field name="description" />
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers" />
-                    <field name="activity_ids" widget="mail_activity" />
-                    <field name="message_ids" widget="mail_thread" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
+
     <record id="hr_compensation_act_window" model="ir.actions.act_window">
         <field name="name">Compensations To Approve</field>
         <field name="res_model">hr.compensation</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('state', '=', 'draft')]</field>
     </record>
+
     <record id="filter_responsible_hr_compensation" model="ir.filters">
         <field name="name">My compensations</field>
         <field name="model_id">hr.compensation</field>
@@ -96,12 +95,14 @@
         <field name="domain">[('responsible_id.user_id', '=', uid)]</field>
         <field name="is_default" eval="True" />
     </record>
+
     <record id="my_hr_compensation_act_window" model="ir.actions.act_window">
         <field name="name">My compensations</field>
         <field name="domain">[('employee_id.user_id', '=', uid)]</field>
         <field name="res_model">hr.compensation</field>
         <field name="view_mode">list,form</field>
     </record>
+
     <menuitem
         id="menu_hr_compensation"
         parent="hr_workweek.menu_hr_workweek_root"
@@ -109,6 +110,7 @@
         sequence="1"
         groups="hr.group_hr_manager"
     />
+
     <menuitem
         id="menu_my_hr_compensation"
         parent="hr_workweek.menu_hr_workweek_root"

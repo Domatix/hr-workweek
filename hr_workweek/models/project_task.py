@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 
+
 class ProjectTask(models.Model):
     _inherit = 'project.task'
 
@@ -10,7 +11,6 @@ class ProjectTask(models.Model):
         recursive=True,
         help="Sum of all unit_amount_invoiced from timesheets including subtasks"
     )
-
     work_efficiency = fields.Float(
         string="Billing Efficiency",
         compute="_compute_efficiency",
