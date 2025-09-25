@@ -17,11 +17,8 @@ class HrCompensation(models.Model):
             record.allocation_count = len(record.hr_allocation_id)
 
     name = fields.Char(store=True, compute="_compute_workweek_name")
-
     description = fields.Text(required=False)
-
-    state = fields.Selection(
-        [
+    state = fields.Selection([
             ("draft", "Draft"),
             ("approved", "Approved"),
             ("refused", "Refused"),
@@ -31,35 +28,36 @@ class HrCompensation(models.Model):
         default="draft",
         tracking=True
     )
-
     employee_id = fields.Many2one(
-        comodel_name="hr.employee", string="Employee", required=True
+        comodel_name="hr.employee",
+        string="Employee",
+        required=True
     )
-
     petition_date = fields.Date(string="Petition date", required=True)
-
     hr_allocation_id = fields.Many2one(
-        comodel_name="hr.leave.allocation", string="Allocation"
+        comodel_name="hr.leave.allocation",
+        string="Allocation"
     )
-
     unit_amount = fields.Float(
         string="Hours to compensate",
         default=0.0,
         store=True,
     )
-
     type = fields.Selection(
-        selection=[("economic", "Economic"), ("leave", "Leave days")]
+        selection=[
+            ("economic", "Economic"),
+            ("leave", "Leave days")
+        ]
     )
-
-    allocation_count = fields.Integer(
-        string="Allocations", compute=_compute_allocation_count
+    allocation_count = fields.Integer(string="Allocations", compute=_compute_allocation_count)
+    responsible_id = fields.Many2one(
+        string="Responsible",
+        comodel_name="hr.employee"
     )
-
-    responsible_id = fields.Many2one(string="Responsible", comodel_name="hr.employee")
-
     workweek_id = fields.Many2one(
-        comodel_name="hr.workweek", string="Workweek", required=True
+        comodel_name="hr.workweek",
+        string="Workweek",
+        required=True
     )
 
     def unlink(self):
@@ -95,18 +93,15 @@ class HrCompensation(models.Model):
     def create_leave_allocation(self):
         ir_config = self.env["ir.config_parameter"].sudo()
         hr_leave_type = int(ir_config.get_param("res.config.settings.hr_leave_type", default=0))
-        self.hr_allocation_id = self.env["hr.leave.allocation"].create(
-            {
-                "name": self.description or self.name,
-                "holiday_status_id": hr_leave_type,
-                "number_of_days": self.unit_amount
-                / self.employee_id.resource_calendar_id.hours_per_day,
-                "holiday_type": "employee",
-                "number_of_hours_display": self.unit_amount,
-                "employee_id": self.employee_id.id,
-                "state": "confirm",
-            }
-        )
+        vals = {
+            "name": self.description or self.name,
+            "holiday_status_id": hr_leave_type,
+            "number_of_days": self.unit_amount / (self.employee_id.resource_calendar_id.hours_per_day or 1.0),
+            "number_of_hours_display": self.unit_amount,
+            "employee_id": self.employee_id.id,
+            "state": "confirm",
+        }
+        self.hr_allocation_id = self.env["hr.leave.allocation"].create(vals)
 
     def action_view_allocation(self):
         return {

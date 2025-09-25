@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-23 16:40+0000\n"
-"PO-Revision-Date: 2025-06-23 16:40+0000\n"
+"POT-Creation-Date: 2025-09-23 11:28+0000\n"
+"PO-Revision-Date: 2025-09-23 11:28+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,19 +18,19 @@ msgstr ""
 #. module: hr_workweek
 #: model:mail.template,body_html:hr_workweek.assignment_email_template
 msgid ""
-"<t t-set=\"button_access\" t-value=\"{                        'url': object.get_base_url() + '/web#id=%s&amp;model=%s&amp;view_type=form' % (object.id, object._name),                        'title': 'View compensation'                    }\"></t>\n"
+"<t t-set=\"button_access\" t-value=\"{                        'url': object.get_base_url() + '/web#id=%s&amp;model=%s&amp;view_type=form' % (object.id, object._name),                        'title': 'View compensation'                    }\"/>\n"
 "                <t t-set=\"body_content\">\n"
 "                    <div style=\"margin: 15px 0;\">\n"
-"                        <p>Hello <t t-out=\"object.responsible_id.name\"></t>,</p>\n"
-"                        <p> The compensation of <t t-out=\"object.name\"></t> has been assigned to you.</p>\n"
+"                        <p>Hello <t t-out=\"object.responsible_id.name\"/>,</p>\n"
+"                        <p> The compensation of <t t-out=\"object.name\"/> has been assigned to you.</p>\n"
 "                    </div>\n"
 "                </t>\n"
-"                <t t-set=\"has_button_access\" t-value=\"True\"></t>\n"
-"                <t t-set=\"company\" t-value=\"object.env.company\"></t>\n"
-"                <t t-set=\"message\" t-value=\"env['mail.message'].new({                         'body': body_content,                         'record_name': object.display_name,                         'preview': '',                         'model': object._name,                         'res_id': object.id,                     })\"></t>\n"
+"                <t t-set=\"has_button_access\" t-value=\"True\"/>\n"
+"                <t t-set=\"company\" t-value=\"object.env.company\"/>\n"
+"                <t t-set=\"message\" t-value=\"env['mail.message'].new({                         'body': body_content,                         'record_name': object.display_name,                         'preview': '',                         'model': object._name,                         'res_id': object.id,                     })\"/>\n"
 "                <t t-call=\"mail.mail_notification_layout\">\n"
-"                    <t t-set=\"object\" t-value=\"object\"></t>\n"
-"                    <t t-set=\"model_description\" t-value=\"'Compensation'\"></t>\n"
+"                    <t t-set=\"object\" t-value=\"object\"/>\n"
+"                    <t t-set=\"model_description\" t-value=\"'Compensation'\"/>\n"
 "                </t>\n"
 "            "
 msgstr ""
@@ -53,7 +53,6 @@ msgstr ""
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/models/hr_employee.py:0
-#, python-format
 msgid ""
 "A default compensation leave type has not been set. Please contact your HR "
 "Manager about this error."
@@ -137,19 +136,17 @@ msgstr "Asignación"
 #. odoo-python
 #: code:addons/hr_workweek/models/hr_compensation.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__allocation_count
-#, python-format
 msgid "Allocations"
 msgstr "Asignaciones"
 
 #. module: hr_workweek
 #: model:ir.model,name:hr_workweek.model_account_analytic_line
 msgid "Analytic Line"
-msgstr "Línea Analítica"
+msgstr "Línea analítica"
 
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/models/hr_workweek.py:0
-#, python-format
 msgid "Analytic Lines"
 msgstr "Líneas analíticas"
 
@@ -202,6 +199,11 @@ msgid "Compensate"
 msgstr "Compensar"
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Compensated Hours"
+msgstr "Horas compensadas"
+
+#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hours_compensated
 msgid "Compensated hours"
 msgstr "Horas compensadas"
@@ -212,6 +214,11 @@ msgid "Compensation assignment"
 msgstr "Asignación de compensación"
 
 #. module: hr_workweek
+#: model:mail.template,subject:hr_workweek.assignment_email_template
+msgid "Compensation assignment (Ref {{object.name or 'n/a'}})"
+msgstr "Asignación de compensación (Ref {{object.name or 'n/a'}})"
+
+#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard__compensation_type
 msgid "Compensation type"
 msgstr "Tipo de compensación"
@@ -219,13 +226,16 @@ msgstr "Tipo de compensación"
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/models/hr_workweek.py:0
-#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__compensation_ids_count
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__hr_compensation_ids
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__compensation_ids
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
 #: model_terms:ir.ui.view,arch_db:hr_workweek.view_employee_form_view_inherit
-#, python-format
 msgid "Compensations"
+msgstr "Compensaciones"
+
+#. module: hr_workweek
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__compensation_ids_count
+msgid "Compensations Count"
 msgstr "Compensaciones"
 
 #. module: hr_workweek
@@ -321,11 +331,6 @@ msgid "Desde"
 msgstr ""
 
 #. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "Diferencia de horas"
-msgstr ""
-
-#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__display_name
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__display_name
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard__display_name
@@ -371,16 +376,6 @@ msgstr "Empleado"
 #: model:ir.model,name:hr_workweek.model_hr_employee_calendar
 msgid "Employee Calendar"
 msgstr "Horario del Empleado"
-
-#. module: hr_workweek
-#: model:ir.actions.server,name:hr_workweek.ir_cron_employee_notification_ir_actions_server
-msgid "Employee weekly notification"
-msgstr "Notificación semanal al empleado"
-
-#. module: hr_workweek
-#: model:ir.actions.server,name:hr_workweek.ir_cron_employees_summary_notification_ir_actions_server
-msgid "Employees weekly summary notification"
-msgstr "Notificación de resumen semanal para empleados"
 
 #. module: hr_workweek
 #: model:ir.actions.server,name:hr_workweek.ir_cron_create_workweek_ir_actions_server
@@ -431,9 +426,19 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr ""
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "General information"
+msgstr "Información general"
+
+#. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.all_workweek_search
 msgid "Group By"
-msgstr ""
+msgstr "Agrupar por"
+
+#. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "HHours to Work"
+msgstr "Horas para trabajar"
 
 #. module: hr_workweek
 #: model:ir.model,name:hr_workweek.model_hr_compensation
@@ -457,34 +462,23 @@ msgstr ""
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_holidays_public_line_ids
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-#, python-format
 msgid "Holidays"
 msgstr "Festivos"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_holidays_public_lines_count
 msgid "Holidays count"
-msgstr ""
+msgstr "Vacaciones"
 
 #. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "Horas a trabajar"
-msgstr ""
+msgid "Hours Difference"
+msgstr "Diferecnia de horas"
 
 #. module: hr_workweek
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "Horas compensadas"
-msgstr ""
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "Horas de ausencia"
-msgstr ""
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "Horas trabajadas"
-msgstr ""
+msgid "Hours Worked"
+msgstr "Horas trabajadas"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hours_difference
@@ -494,7 +488,6 @@ msgstr "Diferencia de horas"
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__unit_amount
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard__compensation_amount
-#: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard__compensation_amount_max
 msgid "Hours to compensate"
 msgstr "Horas a compensar"
 
@@ -508,17 +501,7 @@ msgstr "Horas a trabajar"
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__id
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard__id
 msgid "ID"
-msgstr ""
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "INFORMACIÓN GENERAL"
-msgstr ""
-
-#. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "INFORMACIÓN SOBRE LAS HORAS DE TRABAJO"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__activity_exception_icon
@@ -597,6 +580,11 @@ msgid "Last Updated on"
 msgstr "Última actualización en"
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "Leave Hours"
+msgstr "Horas de ausencia"
+
+#. module: hr_workweek
 #: model:ir.model.fields.selection,name:hr_workweek.selection__hr_compensation__type__leave
 #: model:ir.model.fields.selection,name:hr_workweek.selection__hr_workweek_wizard__compensation_type__leave
 msgid "Leave days"
@@ -617,7 +605,6 @@ msgstr "Tipo de ausencia para las compensaciones de horas extra"
 #: code:addons/hr_workweek/models/hr_workweek.py:0
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_leave_ids
 #: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-#, python-format
 msgid "Leaves"
 msgstr "Ausencias"
 
@@ -625,6 +612,11 @@ msgstr "Ausencias"
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__hr_leaves_count
 msgid "Leaves count"
 msgstr "Conteo de salidas"
+
+#. module: hr_workweek
+#: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek_wizard__compensation_amount_max
+msgid "Max hours to compensate"
+msgstr "Horas a compensar"
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__message_has_error
@@ -668,7 +660,6 @@ msgstr "Nombre"
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/models/hr_workweek.py:0
-#, python-format
 msgid "New"
 msgstr "Nueva"
 
@@ -741,12 +732,8 @@ msgid "Petition date"
 msgstr "Fecha de petición"
 
 #. module: hr_workweek
-#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
-msgid "Progreso"
-msgstr ""
-
-#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_workweek__progress
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
 msgid "Progress"
 msgstr "Progreso"
 
@@ -862,7 +849,6 @@ msgstr "Tarea"
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/wizard/hr_workweek_wizard.py:0
-#, python-format
 msgid "The number of hours must be greater than 0."
 msgstr "El número de horas debe ser mayor que 0."
 
@@ -870,11 +856,6 @@ msgstr "El número de horas debe ser mayor que 0."
 #: model:ir.model,name:hr_workweek.model_hr_leave
 msgid "Time Off"
 msgstr "Ausencias"
-
-#. module: hr_workweek
-#: model:ir.model.fields,field_description:hr_workweek.field_account_analytic_line__holiday_id
-msgid "Time Off Request"
-msgstr "Solicitud de tiempo libre"
 
 #. module: hr_workweek
 #: model:res.groups,name:hr_workweek.group_timesheet_modified_date
@@ -1036,14 +1017,12 @@ msgstr "Ajustes de las semanas de trabajo"
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/models/account_analytic_line.py:0
-#, python-format
 msgid "You can only record hours for today."
 msgstr "Sólo puedes registrar horas del día de hoy."
 
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/wizard/hr_workweek_wizard.py:0
-#, python-format
 msgid "You can't compensate more than %(max_hours)s hours"
 msgstr "No puedes compensar más de %(max_hours)s horas"
 
@@ -1058,29 +1037,23 @@ msgid "hr_workweek_tree"
 msgstr ""
 
 #. module: hr_workweek
+#: model_terms:ir.ui.view,arch_db:hr_workweek.hr_workweek_view_form
+msgid "infromation on working hours"
+msgstr "Información sobre el horario laboral"
+
+#. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_employee__workweek_ids_count
 msgid "workweeks"
 msgstr "semanas de trabajo"
 
 #. module: hr_workweek
-#: model:mail.template,subject:hr_workweek.assignment_email_template
-msgid ""
-"Compensation assignment (Ref "
-"{{object.name or 'n/a'}})"
-msgstr ""
-"Asignación de compensación (Ref "
-"{{object.name or 'n/a'}})"
-
-#. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/models/hr_employee.py:0
-#, python-format
 msgid "{}'s compensations"
 msgstr "Compensaciones de {}"
 
 #. module: hr_workweek
 #. odoo-python
 #: code:addons/hr_workweek/models/hr_employee.py:0
-#, python-format
 msgid "{}'s workweeks"
 msgstr "Semanas de trabajo de {}"

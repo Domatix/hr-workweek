@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -13,12 +12,7 @@ class HrEmployee(models.Model):
         inverse_name="employee_id",
         string="Workweeks",
     )
-
-    workweek_ids_count = fields.Integer(
-        string="workweeks",
-        compute="_compute_workweek_ids_count",
-    )
-
+    workweek_ids_count = fields.Integer(string="workweeks",compute="_compute_workweek_ids_count")
     hours_difference = fields.Float(
         string="Total hours difference",
         help="If positive, you still have some work hours to do. "
@@ -26,49 +20,39 @@ class HrEmployee(models.Model):
         compute="_compute_hours_difference",
         store=True,
     )
-
     hr_compensation_ids = fields.One2many(
         comodel_name="hr.compensation",
         inverse_name="employee_id",
         string="Compensations",
     )
-
-    compensation_ids_count = fields.Integer(
-        string="Compensations", compute="_compute_compensation_count"
-    )
-
+    compensation_ids_count = fields.Integer(string="Compensations Count", compute="_compute_compensation_count")
     current_workweek = fields.Many2one(
         comodel_name="hr.workweek"
     )
-
     analytic_line_ids = fields.One2many(
         'account.analytic.line',
         'employee_id',
         string="Timesheets",
         help="All timesheet entries linked to this employee"
     )
-
     total_hours_worked = fields.Float(
         string="Total Worked",
         compute="_compute_efficiency",
         store=True,
         help="Sum of all unit_amount from timesheets"
     )
-
     total_hours_invoiced = fields.Float(
         string="Total Invoiced",
         compute="_compute_efficiency",
         store=True,
         help="Sum of all unit_amount_invoiced from timesheets"
     )
-
     work_efficiency = fields.Float(
         string="Billing Efficiency",
         compute="_compute_efficiency",
         store=True,
         help="Percentage of worked hours that are billable (unit_amount_invoiced / unit_amount * 100)"
     )
-
     invoiced_hours_start_date_str = fields.Date(
         compute="_compute_invoiced_hours_start_date_str",
         store=False,

@@ -1,7 +1,5 @@
 from datetime import datetime, time
-
 import pytz
-
 from odoo import _, api, fields, models
 
 HOURS_PER_DAY = 8
@@ -14,34 +12,27 @@ class HrWorkweek(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(required=True)
-
     description = fields.Text()
-
     employee_id = fields.Many2one(
         comodel_name="hr.employee", required=True
     )
-
     date_start = fields.Date(
         string="Start date",
         required=True,
     )
-
     date_end = fields.Date(
         string="End date",
         required=True,
     )
-
     account_analytic_line_ids = fields.One2many(
         comodel_name="account.analytic.line",
         inverse_name="hr_workweek_id",
         string="Account analytic lines",
         required=False,
     )
-
     account_analytic_lines_count = fields.Integer(
         string="Account analytic lines count", compute="_compute_count"
     )
-
     hr_leave_ids = fields.Many2many(
         comodel_name="hr.leave",
         string="Leaves",
@@ -49,21 +40,17 @@ class HrWorkweek(models.Model):
         column1="workweek_id",
         relation="leave_workweek_rel",
     )
-
     hr_leaves_count = fields.Integer(
         string="Leaves count", compute="_compute_count"
     )
-
     hr_holidays_public_line_ids = fields.Many2many(
-        comodel_name="hr.holidays.public.line",
+        comodel_name="calendar.public.holiday.line",
         compute="_compute_holidays_lines",
         string="Holidays",
     )
-
     hr_holidays_public_lines_count = fields.Integer(
         string="Holidays count", compute="_compute_count"
     )
-
     hours_to_work = fields.Float(
         string="Hours to work",
         required=True,
@@ -74,7 +61,6 @@ class HrWorkweek(models.Model):
         "your current assigned work calendar",
         compute="_compute_hours_to_work",
     )
-
     hours_compensated = fields.Float(
         string="Compensated hours",
         required=True,
@@ -88,7 +74,6 @@ class HrWorkweek(models.Model):
         "those hours. The maximum number of compensated hours "
         "must be less or equal than value of the hours difference. ",
     )
-
     hours_worked = fields.Float(
         string="Worked hours",
         compute="_compute_hours_worked",
@@ -99,7 +84,6 @@ class HrWorkweek(models.Model):
         "is between the date range this document shows",
         default=0.0,
     )
-
     hours_leave = fields.Float(
         string="Leave hours",
         default=0.0,
@@ -110,7 +94,6 @@ class HrWorkweek(models.Model):
         "document shows",
         required=False,
     )
-
     hours_difference = fields.Float(
         string="Hours difference",
         default=0.0,
@@ -119,28 +102,21 @@ class HrWorkweek(models.Model):
         "If negative, you've worked beyond what you should've",
         store=True,
     )
-
-    progress = fields.Float(
-        compute="_compute_progress",
-    )
-
+    progress = fields.Float(compute="_compute_progress",)
     compensation_ids = fields.One2many(
         comodel_name="hr.compensation",
         inverse_name="workweek_id",
         string="Compensations",
     )
-
     compensation_count = fields.Integer(
         string="Compensations count", compute="_compute_count"
     )
-
     unit_amount_invoiced = fields.Float(
         string="Invoiced Hours",
         compute="_compute_unit_amount_invoiced",
         store=True,
         help="Total hours invoiced in the week"
     )
-
     work_efficiency = fields.Float(
         string="Efficiency",
         compute="_compute_work_efficiency",
@@ -163,20 +139,24 @@ class HrWorkweek(models.Model):
             else:
                 week.work_efficiency = 0.0
 
-    @api.model
-    def create(self, vals):
-        vals["name"] = self.env["ir.sequence"].next_by_code("hr.workweek") or _("New")
-        res = super().create(vals)
-        analytic_line_ids = res.search_analytic_lines()
-        leave_ids = res.search_leave_ids()
-        if analytic_line_ids:
-            res.account_analytic_line_ids = [(6, 0, analytic_line_ids.ids)]
-        if leave_ids:
-            res.hr_leave_ids = [(6, 0, leave_ids.ids)]
-        res._compute_hours_to_work()
-        res._compute_hours_compensated()
-        res._compute_hours_leave()
-        return res
+    @api.model_create_multi
+    def create(self, vals_list):
+        if isinstance(vals_list, dict):
+            vals_list = [vals_list]
+        for vals in vals_list:
+            vals["name"] = self.env["ir.sequence"].next_by_code("hr.workweek") or _("New")
+        records = super().create(vals_list)
+        for rec in records:
+            analytic_line_ids = rec.search_analytic_lines()
+            leave_ids = rec.search_leave_ids()
+            if analytic_line_ids:
+                rec.account_analytic_line_ids = [(6, 0, analytic_line_ids.ids)]
+            if leave_ids:
+                rec.hr_leave_ids = [(6, 0, leave_ids.ids)]
+            rec._compute_hours_to_work()
+            rec._compute_hours_compensated()
+            rec._compute_hours_leave()
+        return records
 
     def search_analytic_lines(self):
         return self.env["account.analytic.line"].search(
@@ -220,7 +200,7 @@ class HrWorkweek(models.Model):
 
     def _compute_holidays_lines(self):
         for record in self:
-            lines = self.env["hr.holidays.public.line"].search(
+            lines = self.env["calendar.public.holiday.line"].search(
                 [("date", ">=", self.date_start), ("date", "<=", self.date_end)]
             )
             record.hr_holidays_public_line_ids = [
@@ -356,7 +336,7 @@ class HrWorkweek(models.Model):
         return {
             "name": _("Holidays"),
             "view_mode": "list,form",
-            "res_model": "hr.holidays.public.line",
+            "res_model": "calendar.public.holiday.line",
             "type": "ir.actions.act_window",
             "domain": [("id", "in", self.hr_holidays_public_line_ids.ids)],
             "context": self.env.context,
