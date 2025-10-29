@@ -91,17 +91,20 @@ class HrCompensation(models.Model):
             record.write({"state": "draft"})
 
     def create_leave_allocation(self):
-        ir_config = self.env["ir.config_parameter"].sudo()
-        hr_leave_type = int(ir_config.get_param("res.config.settings.hr_leave_type", default=0))
-        vals = {
-            "name": self.description or self.name,
-            "holiday_status_id": hr_leave_type,
-            "number_of_days": self.unit_amount / (self.employee_id.resource_calendar_id.hours_per_day or 1.0),
-            "number_of_hours_display": self.unit_amount,
-            "employee_id": self.employee_id.id,
-            "state": "confirm",
-        }
-        self.hr_allocation_id = self.env["hr.leave.allocation"].create(vals)
+        for record in self:
+            if record.type != "leave":
+                continue  
+            ir_config = self.env["ir.config_parameter"].sudo()
+            hr_leave_type = int(ir_config.get_param("res.config.settings.hr_leave_type", default=0))
+            vals = {
+                "name": record.description or record.name,
+                "holiday_status_id": hr_leave_type,
+                "number_of_days": record.unit_amount / (record.employee_id.resource_calendar_id.hours_per_day or 1.0),
+                "number_of_hours_display": record.unit_amount,
+                "employee_id": record.employee_id.id,
+                "state": "confirm",
+            }
+            record.hr_allocation_id = self.env["hr.leave.allocation"].create(vals)
 
     def action_view_allocation(self):
         return {
