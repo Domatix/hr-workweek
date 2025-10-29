@@ -104,6 +104,7 @@ class HrCompensation(models.Model):
                 "employee_id": record.employee_id.id,
                 "state": "confirm",
             }
+            
             record.hr_allocation_id = self.env["hr.leave.allocation"].create(vals)
 
     def action_view_allocation(self):
