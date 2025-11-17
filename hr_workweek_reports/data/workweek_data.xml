@@ -12,14 +12,14 @@
             <field name="body_html" type="html">
                 <p>Hello <t t-out="object.name" />,</p>
                 <p>This week, from <t
-                        t-out="object.current_workweek.date_start"
-                    /> to <t t-out="object.current_workweek.date_end" />,
+                        t-out="object.current_workweek.date_start"/> 
+                    to <t t-out="object.current_workweek.date_end"/>,
                     you have worked <t
-                        t-out="object.current_workweek.hours_worked"
-                    /> hours of
-                    <t t-out="object.current_workweek.hours_to_work" />,
-                    with <t t-out="object.current_workweek.unit_amount_invoiced" /> invoiced hours
-                    (<t t-out="round(object.current_workweek.work_efficiency, 2)" />% efficiency).
+                        t-out="object.current_workweek.hours_worked" t-options="{'widget': 'float_time'}"/>
+                    hours of
+                    <t t-out="object.current_workweek.hours_to_work" t-options="{'widget': 'float_time'}"/>,
+                    with <t t-out="object.current_workweek.unit_amount_invoiced" t-options="{'widget': 'float_time'}"/> invoiced hours
+                    (<t t-out="round(object.current_workweek.work_efficiency, 2)" t-options="{'widget': 'float_time'}"/>% efficiency).
                 </p>
 
                 <p>Taking into account your past workweeks,
@@ -27,20 +27,20 @@
                         <span
                             style="background-color: #ef9a9a"
                         > you still have to work <t
-                                t-out="abs(object.hours_difference)"
-                            /> hours.</span>
+                                t-out="abs(object.hours_difference)" t-options="{'widget': 'float_time'}"/>
+                            hours.</span>
                     </t>
                     <t t-elif="object.hours_difference &lt; 0">
                         <span style="background-color: #93c2e5"> you have <t
-                                t-out="abs(object.hours_difference)"
-                            /> hours of overtime work.</span>
+                                t-out="abs(object.hours_difference)" t-options="{'widget': 'float_time'}"/>
+                            hours of overtime work.</span>
                     </t>
                     <t t-else="">
                         <span
                             style="background-color: #69f0ae"
                         > the difference between your worked and to work hours is <t
-                                t-out="abs(object.hours_difference)"
-                            />.</span>
+                                t-out="abs(object.hours_difference)" t-options="{'widget': 'float_time'}"/>
+                            .</span>
                     </t>
                 </p>
             </field>
@@ -80,20 +80,20 @@
                                 <t t-foreach="employees" t-as="employee">
                                     <tr style="text-align: left;">
                                         <td><span t-field="employee.name"/></td>
-                                        <td><span t-field="employee.current_workweek.hours_worked"/></td>
+                                        <td><span t-field="employee.current_workweek.hours_worked" t-options="{'widget': 'float_time'}"/></td>
                                         <td>
-                                            <span t-out="sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced'))"/>
+                                            <span t-out="sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced'))" t-options="{'widget': 'float_time'}"/>
                                         </td>
                                         <td t-att-style="'background-color: %s' % (
                                             '#ef9a9a' if ((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked &gt; 0 else 0) &lt; 50 else
                                             '#ffff52' if ((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked &gt; 0 else 0) &lt; 75 else '#69f0ae')">
-                                            <span t-out="round((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked > 0 else 0, 2)"/>%
+                                            <span t-out="round((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked > 0 else 0, 2)" t-options="{'widget': 'float_time'}"/>%
                                         </td>
                                         <td t-att-style="'background-color: %s' % ('#ef9a9a' if employee.current_workweek.hours_difference &gt; 0 else '#93c2e5' if employee.current_workweek.hours_difference &lt; 0 else '#69f0ae')">
-                                            <span t-field="employee.current_workweek.hours_difference"/>
+                                            <span t-field="employee.current_workweek.hours_difference" t-options="{'widget': 'float_time'}"/>
                                         </td>
                                         <td t-att-style="'background-color: %s' % ('#ef9a9a' if employee.hours_difference > 0 else '#93c2e5' if employee.hours_difference &lt; 0 else '#69f0ae')">
-                                            <span t-field="employee.hours_difference"/>
+                                            <span t-field="employee.hours_difference" t-options="{'widget': 'float_time'}"/>
                                         </td>
                                     </tr>
                                 </t>
