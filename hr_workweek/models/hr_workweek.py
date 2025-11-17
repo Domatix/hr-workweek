@@ -216,14 +216,7 @@ class HrWorkweek(models.Model):
         """
         return workday.weekday() < 5
 
-    @api.depends(
-        "employee_id",
-        "date_start",
-        "date_end",
-        "hr_leave_ids",
-        "hr_leave_ids.state",
-        "hr_holidays_public_line_ids",
-    )
+    @api.depends("employee_id", "date_start", "date_end", "hr_leave_ids", "hr_leave_ids.state", "hr_holidays_public_line_ids")
     def _compute_hours_to_work(self):
         for record in self:
             if record.date_start and record.date_end:
@@ -260,9 +253,7 @@ class HrWorkweek(models.Model):
                 record.account_analytic_line_ids.mapped("unit_amount")
             )
 
-    @api.depends(
-        "hours_worked", "hours_to_work", "hr_leave_ids", "hr_holidays_public_line_ids"
-    )
+    @api.depends("hours_worked", "hours_to_work", "hr_leave_ids", "hr_holidays_public_line_ids")
     def _compute_hours_leave(self):
         for record in self:
             if record.date_start and record.date_end: 

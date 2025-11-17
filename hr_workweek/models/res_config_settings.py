@@ -63,7 +63,6 @@ class ResConfigSettings(models.TransientModel):
     def get_values(self):
         res = super().get_values()
         ir_config = self.env["ir.config_parameter"].sudo()
-
         excluded_calendar_ids = ir_config.get_param(
             "res.config.settings.excluded_calendar_ids", default=""
         )
