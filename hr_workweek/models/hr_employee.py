@@ -159,7 +159,8 @@ class HrEmployee(models.Model):
                 }
             )
         compensation_id = self.env["hr.compensation"].create(vals)
-        compensation_id.create_leave_allocation()
+        if compensation_type == "leave":
+            compensation_id.create_leave_allocation()
         template = self.env.ref("hr_workweek.assignment_email_template")
         if template:
             template.with_context(
