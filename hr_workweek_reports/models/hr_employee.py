@@ -15,9 +15,7 @@ class HrEmployee(models.Model):
             excluded_calendars = [int(id) for id in excluded_calendar_ids if id.isdigit()]
             template = self.env.ref("hr_workweek_reports.hours_worked_email_template")
             if template:
-                for employee in self.env["hr.employee"].search(
-                    [("resource_calendar_id", "not in", excluded_calendars)]
-                ):
+                for employee in self.env["hr.employee"].search([("resource_calendar_id", "not in", excluded_calendars)]):
                     context = {
                         'hours_difference': getattr(employee.current_workweek, 'hours_difference', 0),
                         'hours_difference_str': str(getattr(employee.current_workweek, 'hours_difference', 0)),
@@ -36,9 +34,7 @@ class HrEmployee(models.Model):
             excluded_calendars = [int(id) for id in excluded_calendar_ids if id.isdigit()]
             template = self.env.ref("hr_workweek_reports.hours_worked_summary_email_template")
             if template:
-                allowed_calendars = self.env["resource.calendar"].search(
-                    [("id","not in",excluded_calendars)]
-                )
+                allowed_calendars = self.env["resource.calendar"].search([("id","not in",excluded_calendars)])
                 employees_by_calendar = {
                     calendar.id: list(self.env["hr.employee"].sudo().search(
                         [("resource_calendar_id", "=", calendar.id)]

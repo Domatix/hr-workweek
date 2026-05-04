@@ -5,13 +5,13 @@
     "author": "Domatix",
     "website": "https://www.domatix.com",
     "category": "Human Resources",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "depends": [
-        "hr_workweek",
+        "hr_workweek"
     ],
     "data": [
         "data/ir_cron.xml",
-        "data/workweek_data.xml",
+        "data/workweek_data.xml"
     ],
     "application": True,
     "installable": True,
