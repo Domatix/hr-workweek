@@ -21,11 +21,7 @@
                     class="oe_stat_button"
                     icon="fa-calendar-minus-o"
                 >
-                    <field
-                        name="workweek_ids_count"
-                        widget="statinfo"
-                        string="Workweeks"
-                    />
+                    <field name="workweek_ids_count" widget="statinfo" string="Workweeks"/>
                 </button>
                 <button
                     name="action_view_compensation_ids"
@@ -34,11 +30,7 @@
                     class="oe_stat_button"
                     icon="fa-calendar-check-o"
                 >
-                    <field
-                        name="compensation_ids_count"
-                        widget="statinfo"
-                        string="Compensations"
-                    />
+                    <field name="compensation_ids_count" widget="statinfo" string="Compensations"/>
                 </button>
             </div>
             <xpath expr="//group[@name='managers']" position="after">
@@ -47,7 +39,7 @@
                     <field name="resource_calendar_id" />
                 </group>
             </xpath>
-            <xpath expr="//page[@name='public']//group[@name='managers']" position="after">
+            <xpath expr="//page[@name='hr_settings']//group[@name='managers']" position="after">
                 <group string="Efficiency">
                     <field name="invoiced_hours_start_date_str" readonly="1"  options="{'format': 'dd/MM/yyyy'}" />
                     <field name="total_hours_worked" widget="float_time" string="Total Worked"/>

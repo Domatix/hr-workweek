@@ -5,7 +5,7 @@
     "author": "Domatix",
     "website": "https://www.domatix.com",
     "category": "Human Resources",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "depends": [
         "hr_timesheet",
         "hr_employee_calendar_planning",
@@ -24,12 +24,12 @@
         "views/hr_compensation_views.xml",
         "data/ir_sequence_data.xml",
         "data/workweek_data.xml",
-        "data/ir_cron.xml",
+        "data/ir_cron.xml"
     ],
     "assets": {
         "web.assets_backend": [
             "hr_workweek/static/src/js/efficiency_color.js",
-            "hr_workweek/static/src/css/efficiency_color.css",
+            "hr_workweek/static/src/css/efficiency_color.css"
         ],
     },
     "application": True,

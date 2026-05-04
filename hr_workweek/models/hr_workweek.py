@@ -14,25 +14,18 @@ class HrWorkweek(models.Model):
     name = fields.Char(required=True)
     description = fields.Text()
     employee_id = fields.Many2one(
-        comodel_name="hr.employee", required=True
+        comodel_name="hr.employee",
+        required=True
     )
-    date_start = fields.Date(
-        string="Start date",
-        required=True,
-    )
-    date_end = fields.Date(
-        string="End date",
-        required=True,
-    )
+    date_start = fields.Date(string="Start date", required=True)
+    date_end = fields.Date(string="End date", required=True)
     account_analytic_line_ids = fields.One2many(
         comodel_name="account.analytic.line",
         inverse_name="hr_workweek_id",
         string="Account analytic lines",
         required=False,
     )
-    account_analytic_lines_count = fields.Integer(
-        string="Account analytic lines count", compute="_compute_count"
-    )
+    account_analytic_lines_count = fields.Integer(string="Account analytic lines count", compute="_compute_count")
     hr_leave_ids = fields.Many2many(
         comodel_name="hr.leave",
         string="Leaves",
@@ -40,17 +33,13 @@ class HrWorkweek(models.Model):
         column1="workweek_id",
         relation="leave_workweek_rel",
     )
-    hr_leaves_count = fields.Integer(
-        string="Leaves count", compute="_compute_count"
-    )
+    hr_leaves_count = fields.Integer(string="Leaves count", compute="_compute_count")
     hr_holidays_public_line_ids = fields.Many2many(
         comodel_name="calendar.public.holiday.line",
         compute="_compute_holidays_lines",
         string="Holidays",
     )
-    hr_holidays_public_lines_count = fields.Integer(
-        string="Holidays count", compute="_compute_count"
-    )
+    hr_holidays_public_lines_count = fields.Integer(string="Holidays count", compute="_compute_count")
     hours_to_work = fields.Float(
         string="Hours to work",
         required=True,
@@ -102,15 +91,13 @@ class HrWorkweek(models.Model):
         "If negative, you've worked beyond what you should've",
         store=True,
     )
-    progress = fields.Float(compute="_compute_progress",)
+    progress = fields.Float(compute="_compute_progress")
     compensation_ids = fields.One2many(
         comodel_name="hr.compensation",
         inverse_name="workweek_id",
         string="Compensations",
     )
-    compensation_count = fields.Integer(
-        string="Compensations count", compute="_compute_count"
-    )
+    compensation_count = fields.Integer(string="Compensations count", compute="_compute_count")
     unit_amount_invoiced = fields.Float(
         string="Invoiced Hours",
         compute="_compute_unit_amount_invoiced",

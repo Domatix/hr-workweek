@@ -53,16 +53,8 @@
                             class="oe_stat_button"
                             icon="fa-sign-out"
                         >
-                            <field
-                                name="hr_allocation_id"
-                                string="Allocation"
-                                invisible="1"
-                            />
-                            <field
-                                name="allocation_count"
-                                widget="statinfo"
-                                string="Allocation"
-                            />
+                            <field name="hr_allocation_id" string="Allocation" invisible="1"/>
+                            <field name="allocation_count" widget="statinfo" string="Allocation"/>
                         </button>
                     </div>
                     <group>
@@ -76,7 +68,7 @@
                         <field name="description" />
                     </group>
                 </sheet>
-                <chatter />
+                <chatter/>
             </form>
         </field>
     </record>

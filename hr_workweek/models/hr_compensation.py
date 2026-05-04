@@ -70,7 +70,7 @@ class HrCompensation(models.Model):
         for record in self:
             if record.type == "leave":
                 if record.hr_allocation_id:
-                    record.hr_allocation_id.action_validate()
+                    record.hr_allocation_id.action_approve()
             record.write({"state": "approved"})
 
     def action_refuse(self):
@@ -86,8 +86,11 @@ class HrCompensation(models.Model):
                 if record.hr_allocation_id:
                     if record.hr_allocation_id.state != "refuse":
                         record.hr_allocation_id.action_refuse()
-                    record.hr_allocation_id.action_draft()
-                    record.hr_allocation_id.action_confirm()
+                    record.hr_allocation_id.sudo().write({
+                        "state": "confirm",
+                        "approver_id": False,
+                        "second_approver_id": False,
+                    })
             record.write({"state": "draft"})
 
     def create_leave_allocation(self):

@@ -85,33 +85,17 @@
                 decoration-success="hours_difference&lt;=0.01"
                 default_order="date_end desc"
             >
-                <field name="employee_id" />
-                <field name="name" />
-                <field name="date_start" />
-                <field name="date_end" />
-                <field
-                    name="hours_worked"
-                    widget="float_time"
-                    sum="Total worked hours"
-                />
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="hours_worked" widget="float_time" sum="Total worked hours"/>
                 <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours" optional="show"/>
                 <field name="work_efficiency" widget="progressbar" optional="show"/>
                 <field name="hours_leave" widget="float_time" sum="Total leave hours" />
-                <field
-                    name="hours_to_work"
-                    widget="float_time"
-                    sum="Total to work hours"
-                />
-                <field
-                    name="hours_difference"
-                    widget="float_time"
-                    sum="Total hours difference"
-                />
-                <field
-                    name="hours_compensated"
-                    widget="float_time"
-                    sum="Total compensated hours"
-                />
+                <field name="hours_to_work" widget="float_time" sum="Total to work hours"/>
+                <field name="hours_difference" widget="float_time" sum="Total hours difference"/>
+                <field name="hours_compensated" widget="float_time" sum="Total compensated hours"/>
             </list>
         </field>
     </record>
@@ -121,30 +105,14 @@
         <field name="model">hr.workweek</field>
         <field name="arch" type="xml">
             <search string="Workweeks">
-                <field name="date_start" />
-                <field name="date_end" />
-                <field name="description" />
-                <field name="employee_id" />
-                <field
-                    name="hours_to_work"
-                    widget="float_time"
-                    sum="Total of hours to work"
-                />
-                <field
-                    name="hours_worked"
-                    widget="float_time"
-                    sum="Total of hours worked"
-                />
-                <field
-                    name="hours_difference"
-                    widget="float_time"
-                    sum="Total of hours to compensate"
-                />
-                <field
-                    name="hours_compensated"
-                    widget="float_time"
-                    sum="Total of compensated hours"
-                />
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="description"/>
+                <field name="employee_id"/>
+                <field name="hours_to_work" widget="float_time" sum="Total of hours to work"/>
+                <field name="hours_worked" widget="float_time" sum="Total of hours worked"/>
+                <field name="hours_difference" widget="float_time" sum="Total of hours to compensate"/>
+                <field name="hours_compensated" widget="float_time" sum="Total of compensated hours"/>
                 <separator />
                 <group expand="0" string="Group By">
                     <filter
