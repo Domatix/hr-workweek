@@ -4,8 +4,7 @@ from odoo.exceptions import UserError
 
 
 class HrEmployee(models.Model):
-    _name = "hr.employee"
-    _inherit = ["hr.employee", "mail.thread"]
+    _inherit = "hr.employee"
 
     hr_workweek_ids = fields.One2many(
         comodel_name="hr.workweek",
@@ -106,12 +105,8 @@ class HrEmployee(models.Model):
 
     @property
     def _hours_difference_without_last_week(self):
-        monday = self.env["hr.workweek"]._get_limit_dates(datetime.today().date())[0]
-        return sum(
-            self.hr_workweek_ids.sorted("date_start")
-            .filtered(lambda x: x.date_end <= monday)
-            .mapped("hours_difference")
-        )
+        monday = self.get_workweek_dates(fields.Date.context_today(self))[0]
+        return sum(self.hr_workweek_ids.sorted("date_start").filtered(lambda x: x.date_end <= monday).mapped("hours_difference"))
 
     def action_view_workweek_ids(self):
         return {
@@ -178,9 +173,8 @@ class HrEmployee(models.Model):
         :return:
         """
         ir_config = self.env["ir.config_parameter"].sudo()
-        leave_type = self.env["hr.leave.type"].search(
-            [("id", "=", ir_config.get_param("res.config.settings.hr_leave_type", default=0))], limit=1,
-        )
+        leave_type_id = int(ir_config.get_param("res.config.settings.hr_leave_type", default=0) or 0)
+        leave_type = self.env["hr.leave.type"].browse(leave_type_id).exists()
         if leave_type:
             return {
                 "type": "ir.actions.act_window",
@@ -205,27 +199,36 @@ class HrEmployee(models.Model):
     @api.model
     def create_current_workweek(self):
         ir_config = self.env["ir.config_parameter"].sudo()
-        excluded_calendar_ids = ir_config.get_param(
-            "res.config.settings.excluded_calendar_ids", default=""
-        )
-        excluded_calendars = [
-            int(id) for id in excluded_calendar_ids.split(",") if id.isdigit()
-        ]
-        date_start, date_end = self.get_workweek_dates()
-        for record in self.env[self._name].search(
-            [("resource_calendar_id", "not in", excluded_calendars)]
-        ):
-            workweek = self.env["hr.workweek"].create(
-                {
-                    "employee_id": record.id,
-                    "date_start": date_start,
-                    "date_end": date_end,
-                }
+        excluded_calendar_ids = ir_config.get_param("res.config.settings.excluded_calendar_ids", default="")
+        excluded_calendars = {int(id) for id in excluded_calendar_ids.split(",") if id.isdigit()}
+        date_start, date_end = self.get_workweek_dates(fields.Date.context_today(self))
+        Workweek = self.env["hr.workweek"]
+        for record in self.search([]):
+            active_versions = record.version_ids.filtered("active")
+            version = record._get_version(date_start) if active_versions else record.version_id
+            calendar = version.resource_calendar_id or record.resource_calendar_id
+            if not calendar or calendar.id in excluded_calendars:
+                continue
+            workweek = Workweek.search(
+                [
+                    ("employee_id", "=", record.id),
+                    ("date_start", "=", date_start),
+                    ("date_end", "=", date_end),
+                ],
+                limit=1,
             )
+            if not workweek:
+                workweek = Workweek.create(
+                    {
+                        "employee_id": record.id,
+                        "date_start": date_start,
+                        "date_end": date_end,
+                    }
+                )
             record.current_workweek = workweek.id
 
     def get_workweek_dates(self, dateweek=False):
-        now = dateweek or datetime.now().date()
+        now = fields.Date.to_date(dateweek) if dateweek else fields.Date.context_today(self)
         start_of_week = now - timedelta(days=now.weekday())
         end_of_week = start_of_week + timedelta(days=6)
         return start_of_week, end_of_week

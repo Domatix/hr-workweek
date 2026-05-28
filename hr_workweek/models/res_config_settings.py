@@ -70,7 +70,7 @@ class ResConfigSettings(models.TransientModel):
         )
         res.update(
             {
-                "hr_leave_type": int(ir_config.get_param("res.config.settings.hr_leave_type", default=0)) or False,
+                "hr_leave_type": int(ir_config.get_param("res.config.settings.hr_leave_type", default=0) or 0) or False,
                 "summary_notification_recipient_ids": [(6, 0, [
                     int(id) for id in summary_recipient_ids.split(",") if id.isdigit()
                 ])],
@@ -81,7 +81,7 @@ class ResConfigSettings(models.TransientModel):
                     "res.config.settings.send_mail_notification", default="False"
                 ) == "True",
                 "send_from_employee_id": int(
-                    ir_config.get_param("res.config.settings.send_from_employee_id", default=0)
+                    ir_config.get_param("res.config.settings.send_from_employee_id", default=0) or 0
                 ) or False,
                 "invoiced_hours_start_date": fields.Date.to_date(
                     ir_config.get_param("res.config.settings.invoiced_hours_start_date")

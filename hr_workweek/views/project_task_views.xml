@@ -21,7 +21,7 @@
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@id='date_deadline_and_recurring_task']" position="after">
-                <field name="work_efficiency" widget="progressbar" options="{'max_value': 999}"/>
+                <field name="work_efficiency" widget="hr_workweek_progressbar" options="{'max_value': 999}"/>
             </xpath>
         </field>
     </record>
@@ -33,7 +33,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='progress'][@widget='project_task_progressbar']" position="after">
                 <field name="total_hours_invoiced" widget="float_time"/>
-                <field name="work_efficiency" widget="progressbar" options="{'max_value': 999}"/>
+                <field name="work_efficiency" widget="hr_workweek_progressbar" options="{'max_value': 999}"/>
             </xpath>
         </field>
     </record>
