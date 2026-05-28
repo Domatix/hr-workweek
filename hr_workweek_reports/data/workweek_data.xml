@@ -100,8 +100,10 @@
                                         <td t-att-style="'background-color: %s' % (
                                             '#ef9a9a' if efficiency &lt; 50 else
                                             '#ffff52' if efficiency &lt; 75 else '#69f0ae')">
-                                            <span t-if="workweek" t-out="round(efficiency, 2)"/>%
-                                            <span t-else="">-</span>
+                                            <t t-if="workweek">
+                                                <span t-out="round(efficiency, 2)"/>%
+                                            </t>
+                                            <t t-else="">-</t>
                                         </td>
                                         <td t-att-style="'background-color: %s' % ('#ef9a9a' if workweek and workweek.hours_difference &gt; 0 else '#93c2e5' if workweek and workweek.hours_difference &lt; 0 else '#69f0ae')">
                                             <span t-if="workweek" t-field="workweek.hours_difference" t-options="{'widget': 'float_time'}"/>

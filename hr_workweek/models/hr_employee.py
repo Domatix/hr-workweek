@@ -204,10 +204,8 @@ class HrEmployee(models.Model):
         date_start, date_end = self.get_workweek_dates(fields.Date.context_today(self))
         Workweek = self.env["hr.workweek"]
         for record in self.search([]):
-            active_versions = record.version_ids.filtered("active")
-            version = record._get_version(date_start) if active_versions else record.version_id
-            calendar = version.resource_calendar_id or record.resource_calendar_id
-            if not calendar or calendar.id in excluded_calendars:
+            calendars = record._get_workweek_exclusion_calendar_ids(date_start)
+            if not calendars or calendars.filtered(lambda calendar: calendar.id in excluded_calendars):
                 continue
             workweek = Workweek.search(
                 [
@@ -226,6 +224,25 @@ class HrEmployee(models.Model):
                     }
                 )
             record.current_workweek = workweek.id
+
+    def _get_workweek_exclusion_calendar_ids(self, dateweek=None):
+        self.ensure_one()
+        dateweek = fields.Date.to_date(dateweek) if dateweek else fields.Date.context_today(self)
+        calendar_ids = []
+
+        if "calendar_ids" in self._fields:
+            planned_calendars = self.calendar_ids.filtered(
+                lambda line: (not line.date_start or line.date_start <= dateweek)
+                and (not line.date_end or line.date_end >= dateweek)
+            ).mapped("calendar_id")
+            calendar_ids.extend(planned_calendars.ids)
+
+        active_versions = self.version_ids.filtered("active")
+        if active_versions:
+            calendar_ids.extend(self._get_version(dateweek).resource_calendar_id.ids)
+
+        calendar_ids.extend((self.resource_calendar_id | self.resource_id.calendar_id).ids)
+        return self.env["resource.calendar"].browse(list(dict.fromkeys(calendar_ids))).exists()
 
     def get_workweek_dates(self, dateweek=False):
         now = fields.Date.to_date(dateweek) if dateweek else fields.Date.context_today(self)
