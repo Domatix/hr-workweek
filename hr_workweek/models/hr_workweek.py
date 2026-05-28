@@ -133,17 +133,22 @@ class HrWorkweek(models.Model):
         for vals in vals_list:
             vals["name"] = self.env["ir.sequence"].next_by_code("hr.workweek") or _("New")
         records = super().create(vals_list)
-        for rec in records:
-            analytic_line_ids = rec.search_analytic_lines()
-            leave_ids = rec.search_leave_ids()
-            if analytic_line_ids:
-                rec.account_analytic_line_ids = [(6, 0, analytic_line_ids.ids)]
-            if leave_ids:
-                rec.hr_leave_ids = [(6, 0, leave_ids.ids)]
+        records._refresh_workweek_data()
+        return records
+
+    def _refresh_workweek_data(self):
+        for rec in self:
+            rec.account_analytic_line_ids = [(6, 0, rec.search_analytic_lines().ids)]
+            rec.hr_leave_ids = [(6, 0, rec.search_leave_ids().ids)]
+            rec._compute_holidays_lines()
             rec._compute_hours_to_work()
             rec._compute_hours_compensated()
+            rec._compute_hours_worked()
+            rec._compute_unit_amount_invoiced()
             rec._compute_hours_leave()
-        return records
+            rec._compute_hours_difference()
+            rec._compute_progress()
+            rec._compute_count()
 
     def search_analytic_lines(self):
         return self.env["account.analytic.line"].search(
@@ -160,6 +165,8 @@ class HrWorkweek(models.Model):
             [
                 "&",
                 ("employee_id", "=", self.employee_id.id),
+                "&",
+                ("state", "in", ["validate", "validate1"]),
                 "|",
                 "|",
                 "&",
@@ -200,7 +207,8 @@ class HrWorkweek(models.Model):
     def _get_employee_calendar(self, employee, date_start):
         if not employee:
             return self.env["resource.calendar"]
-        return employee._get_workweek_exclusion_calendar_ids(date_start)[:1]
+        calendar_by_employee = employee._get_calendars(date_start) if date_start else {}
+        return calendar_by_employee.get(employee.id) or employee.resource_calendar_id or employee.resource_id.calendar_id
 
     def date_is_working_day(self, workday):
         """
@@ -221,19 +229,21 @@ class HrWorkweek(models.Model):
                     record.hours_to_work = 0.0
                     continue
                 tz = pytz.timezone(calendar.tz or employee.tz or self.env.user.tz or "UTC")
-                start_date = tz.localize(datetime.combine(record.date_start, time.min)).astimezone(pytz.utc).replace(tzinfo=None)
-                end_date = tz.localize(datetime.combine(record.date_end, time.max)).astimezone(pytz.utc).replace(tzinfo=None)
-                hours = employee.with_context(
+                start_date = tz.localize(datetime.combine(record.date_start, time.min)).astimezone(pytz.utc)
+                end_date = tz.localize(datetime.combine(record.date_end, time.max)).astimezone(pytz.utc)
+                intervals = calendar.with_context(
                     exclude_public_holidays=True,
                     employee_id=employee.id,
-                    tz=calendar.tz or employee.tz or self.env.user.tz or "UTC",
-                )._get_work_days_data_batch(
+                )._work_intervals_batch(
                     start_date,
                     end_date,
-                    calendar=calendar,
+                    employee.resource_id,
                 )
                 record._compute_holidays_lines()
-                record.hours_to_work = hours.get(employee.id, {}).get("hours", 0.0)
+                hours_data = calendar._get_attendance_intervals_days_data(
+                    intervals[employee.resource_id.id]
+                )
+                record.hours_to_work = hours_data.get("hours", 0.0)
             else:
                 record.hours_to_work = 0.0
 
