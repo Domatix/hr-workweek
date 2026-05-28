@@ -56,13 +56,13 @@
                             <field name="date_start" string="Desde" options="{'related_end_date': 'date_end'}"/>
                             <field name="date_end" string="Hasta" options="{'related_start_date': 'date_start'}"/>
                             <field name="employee_id" string="Empleado"/>
-                            <field name="progress" widget="progressbar" string="Progress"/>
+                            <field name="progress" widget="hr_workweek_progressbar" string="Progress"/>
                             <field name="description" string="Descripción"/>
                         </group>
                         <group string="infromation on working hours" colspan="2">
                             <field name="hours_worked" widget="float_time" string="Hours Worked"/>
                             <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours"/>
-                            <field name="work_efficiency" widget="progressbar"/>
+                            <field name="work_efficiency" widget="hr_workweek_progressbar"/>
                             <field name="hours_leave" widget="float_time" string="Leave Hours"/>
                             <field name="hours_to_work" widget="float_time" string="HHours to Work"/>
                             <field name="hours_difference" widget="float_time" string="Hours Difference"/>
@@ -91,7 +91,7 @@
                 <field name="date_end"/>
                 <field name="hours_worked" widget="float_time" sum="Total worked hours"/>
                 <field name="unit_amount_invoiced" widget="float_time" sum="Total invoiced hours" optional="show"/>
-                <field name="work_efficiency" widget="progressbar" optional="show"/>
+                <field name="work_efficiency" widget="hr_workweek_progressbar" optional="show"/>
                 <field name="hours_leave" widget="float_time" sum="Total leave hours" />
                 <field name="hours_to_work" widget="float_time" sum="Total to work hours"/>
                 <field name="hours_difference" widget="float_time" sum="Total hours difference"/>

@@ -121,7 +121,7 @@ class HrWorkweek(models.Model):
     @api.depends('hours_worked', 'unit_amount_invoiced')
     def _compute_work_efficiency(self):
         for week in self:
-            if week.unit_amount_invoiced > 0:
+            if week.hours_worked > 0:
                 week.work_efficiency = (week.unit_amount_invoiced / week.hours_worked) * 100
             else:
                 week.work_efficiency = 0.0
@@ -187,12 +187,22 @@ class HrWorkweek(models.Model):
 
     def _compute_holidays_lines(self):
         for record in self:
+            if not record.date_start or not record.date_end:
+                record.hr_holidays_public_line_ids = [(5, 0, 0)]
+                continue
             lines = self.env["calendar.public.holiday.line"].search(
-                [("date", ">=", self.date_start), ("date", "<=", self.date_end)]
+                [("date", ">=", record.date_start), ("date", "<=", record.date_end)]
             )
             record.hr_holidays_public_line_ids = [
-                (6, 0, lines.filtered(lambda x: self.date_is_working_day(x.date)).ids)
+                (6, 0, lines.filtered(lambda x: record.date_is_working_day(x.date)).ids)
             ]
+
+    def _get_employee_calendar(self, employee, date_start):
+        if not employee:
+            return self.env["resource.calendar"]
+        active_versions = employee.version_ids.filtered("active")
+        version = employee._get_version(date_start) if date_start and active_versions else employee.version_id
+        return version.resource_calendar_id or employee.resource_calendar_id or employee.resource_id.calendar_id
 
     def date_is_working_day(self, workday):
         """
@@ -206,23 +216,24 @@ class HrWorkweek(models.Model):
     @api.depends("employee_id", "date_start", "date_end", "hr_leave_ids", "hr_leave_ids.state", "hr_holidays_public_line_ids")
     def _compute_hours_to_work(self):
         for record in self:
-            if record.date_start and record.date_end:
+            if record.date_start and record.date_end and record.employee_id:
                 employee = record.employee_id
-                tz = employee.resource_id.calendar_id.tz
-                start_date = datetime.combine(
-                    record.date_start, time(0, 0, 0, 0, tzinfo=pytz.timezone(tz))
-                )
-                end_date = datetime.combine(
-                    record.date_end, time(23, 59, 59, 99999, tzinfo=pytz.timezone(tz))
-                )
+                calendar = record._get_employee_calendar(employee, record.date_start)
+                if not calendar:
+                    record.hours_to_work = 0.0
+                    continue
+                tz = pytz.timezone(calendar.tz or employee.tz or self.env.user.tz or "UTC")
+                start_date = tz.localize(datetime.combine(record.date_start, time.min))
+                end_date = tz.localize(datetime.combine(record.date_end, time.max))
                 hours = employee.with_context(
                     exclude_public_holidays=True, employee_id=employee.id
                 )._get_work_days_data_batch(
                     start_date,
                     end_date,
+                    calendar=calendar,
                 )
                 record._compute_holidays_lines()
-                record.hours_to_work = hours[employee.id].get("hours")
+                record.hours_to_work = hours.get(employee.id, {}).get("hours", 0.0)
             else:
                 record.hours_to_work = 0.0
 
@@ -243,11 +254,15 @@ class HrWorkweek(models.Model):
     @api.depends("hours_worked", "hours_to_work", "hr_leave_ids", "hr_holidays_public_line_ids")
     def _compute_hours_leave(self):
         for record in self:
-            if record.date_start and record.date_end: 
-                calendar = record.employee_id.resource_calendar_id
+            if record.date_start and record.date_end and record.employee_id:
+                calendar = record._get_employee_calendar(record.employee_id, record.date_start)
+                if not calendar:
+                    record.hours_leave = 0.0
+                    continue
                 hours_to_work_without_leaves = calendar.get_work_hours_count(
                     datetime.combine(record.date_start, time.min),
                     datetime.combine(record.date_end, time.max),
+                    compute_leaves=False,
                 )
                 record.hours_leave = hours_to_work_without_leaves - record.hours_to_work
             else:

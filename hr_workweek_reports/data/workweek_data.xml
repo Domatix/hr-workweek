@@ -5,23 +5,28 @@
             <field name="name">Weekly report of worked hours</field>
             <field name="model_id" ref="model_hr_employee" />
             <field name="email_from">{{object.company_id.partner_id.email}}</field>
-            <field name="subject">{{object.name}}'s weekly report of worked hours: {{object.current_workweek.date_start}} &#8594; {{object.current_workweek.date_end}}</field>
+            <field name="subject">{{object.name}}'s weekly report of worked hours{{object.current_workweek and ': %s to %s' % (object.current_workweek.date_start, object.current_workweek.date_end) or ''}}</field>
             <field name="email_to">{{object.work_email}}</field>
             <field name="email_cc">{{object.coach_id.work_email}}</field>
             <field name="lang">{{object.user_id.partner_id.lang}}</field>
             <field name="body_html" type="html">
+                <t t-set="workweek" t-value="object.current_workweek"/>
                 <p>Hello <t t-out="object.name" />,</p>
-                <p>This week, from <t
-                        t-out="object.current_workweek.date_start"/> 
-                    to <t t-out="object.current_workweek.date_end"/>,
-                    you have worked <t
-                        t-out="object.current_workweek.hours_worked" t-options="{'widget': 'float_time'}"/>
-                    hours of
-                    <t t-out="object.current_workweek.hours_to_work" t-options="{'widget': 'float_time'}"/>,
-                    with <t t-out="object.current_workweek.unit_amount_invoiced" t-options="{'widget': 'float_time'}"/> invoiced hours
-                    (<t t-out="round(object.current_workweek.work_efficiency, 2)" t-options="{'widget': 'float_time'}"/>% efficiency).
-                </p>
-
+                <t t-if="workweek">
+                    <p>This week, from <t
+                            t-out="workweek.date_start"/>
+                        to <t t-out="workweek.date_end"/>,
+                        you have worked <t
+                            t-out="workweek.hours_worked" t-options="{'widget': 'float_time'}"/>
+                        hours of
+                        <t t-out="workweek.hours_to_work" t-options="{'widget': 'float_time'}"/>,
+                        with <t t-out="workweek.unit_amount_invoiced" t-options="{'widget': 'float_time'}"/> invoiced hours
+                        (<t t-out="round(workweek.work_efficiency, 2)"/>% efficiency).
+                    </p>
+                </t>
+                <t t-else="">
+                    <p>No current workweek has been generated for this employee yet.</p>
+                </t>
                 <p>Taking into account your past workweeks,
                     <t t-if="object.hours_difference &gt; 0">
                         <span
@@ -78,21 +83,31 @@
                             </thead>
                             <tbody>
                                 <t t-foreach="employees" t-as="employee">
+                                    <t t-set="workweek" t-value="employee.current_workweek"/>
+                                    <t t-set="invoiced_hours" t-value="sum(workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) if workweek else 0.0"/>
+                                    <t t-set="worked_hours" t-value="workweek.hours_worked if workweek else 0.0"/>
+                                    <t t-set="efficiency" t-value="(invoiced_hours / worked_hours * 100) if worked_hours else 0.0"/>
                                     <tr style="text-align: left;">
                                         <td><span t-field="employee.name"/></td>
-                                        <td><span t-field="employee.current_workweek.hours_worked" t-options="{'widget': 'float_time'}"/></td>
                                         <td>
-                                            <span t-out="sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced'))" t-options="{'widget': 'float_time'}"/>
+                                            <span t-if="workweek" t-field="workweek.hours_worked" t-options="{'widget': 'float_time'}"/>
+                                            <span t-else="">-</span>
+                                        </td>
+                                        <td>
+                                            <span t-if="workweek" t-out="invoiced_hours" t-options="{'widget': 'float_time'}"/>
+                                            <span t-else="">-</span>
                                         </td>
                                         <td t-att-style="'background-color: %s' % (
-                                            '#ef9a9a' if ((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked &gt; 0 else 0) &lt; 50 else
-                                            '#ffff52' if ((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked &gt; 0 else 0) &lt; 75 else '#69f0ae')">
-                                            <span t-out="round((sum(employee.current_workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) / employee.current_workweek.hours_worked * 100) if employee.current_workweek.hours_worked > 0 else 0, 2)" t-options="{'widget': 'float_time'}"/>%
+                                            '#ef9a9a' if efficiency &lt; 50 else
+                                            '#ffff52' if efficiency &lt; 75 else '#69f0ae')">
+                                            <span t-if="workweek" t-out="round(efficiency, 2)"/>%
+                                            <span t-else="">-</span>
                                         </td>
-                                        <td t-att-style="'background-color: %s' % ('#ef9a9a' if employee.current_workweek.hours_difference &gt; 0 else '#93c2e5' if employee.current_workweek.hours_difference &lt; 0 else '#69f0ae')">
-                                            <span t-field="employee.current_workweek.hours_difference" t-options="{'widget': 'float_time'}"/>
+                                        <td t-att-style="'background-color: %s' % ('#ef9a9a' if workweek and workweek.hours_difference &gt; 0 else '#93c2e5' if workweek and workweek.hours_difference &lt; 0 else '#69f0ae')">
+                                            <span t-if="workweek" t-field="workweek.hours_difference" t-options="{'widget': 'float_time'}"/>
+                                            <span t-else="">-</span>
                                         </td>
-                                        <td t-att-style="'background-color: %s' % ('#ef9a9a' if employee.hours_difference > 0 else '#93c2e5' if employee.hours_difference &lt; 0 else '#69f0ae')">
+                                        <td t-att-style="'background-color: %s' % ('#ef9a9a' if employee.hours_difference &gt; 0 else '#93c2e5' if employee.hours_difference &lt; 0 else '#69f0ae')">
                                             <span t-field="employee.hours_difference" t-options="{'widget': 'float_time'}"/>
                                         </td>
                                     </tr>
@@ -126,7 +141,7 @@
                                 <th>The employee has worked more than they should've</th>
                             </tr>
                             <tr style="text-align: left;">
-                                <th style="background-color: #69f0ae">Cool hours</th>69f0ae
+                                <th style="background-color: #69f0ae">Cool hours</th>
                                 <th>The employee has worked the exact amount they should've</th>
                             </tr>
                         </tbody>
