@@ -95,11 +95,13 @@ class HrCompensation(models.Model):
 
     def create_leave_allocation(self):
         ir_config = self.env["ir.config_parameter"].sudo()
-        hr_leave_type = int(ir_config.get_param("res.config.settings.hr_leave_type", default=0))
+        hr_leave_type = int(ir_config.get_param("res.config.settings.hr_leave_type", default=0) or 0)
+        calendar = self.workweek_id._get_employee_calendar(self.employee_id, self.workweek_id.date_start)
+        hours_per_day = calendar.hours_per_day or self.employee_id._get_hours_per_day(self.workweek_id.date_start) or 1.0
         vals = {
             "name": self.description or self.name,
             "holiday_status_id": hr_leave_type,
-            "number_of_days": self.unit_amount / (self.employee_id.resource_calendar_id.hours_per_day or 1.0),
+            "number_of_days": self.unit_amount / hours_per_day,
             "number_of_hours_display": self.unit_amount,
             "employee_id": self.employee_id.id,
             "state": "confirm",

@@ -65,7 +65,7 @@ class HrEmployee(models.Model):
                 "res.config.settings.invoiced_hours_start_date", 
                 default=""
             )
-            employee.invoiced_hours_start_date_str = start_date if start_date else ""
+            employee.invoiced_hours_start_date_str = start_date or False
 
     @api.depends('analytic_line_ids.unit_amount', 'analytic_line_ids.unit_amount_invoiced')
     def _compute_efficiency(self):

@@ -114,7 +114,7 @@
                 <field name="hours_difference" widget="float_time" sum="Total of hours to compensate"/>
                 <field name="hours_compensated" widget="float_time" sum="Total of compensated hours"/>
                 <separator />
-                <group expand="0" string="Group By">
+                <group>
                     <filter
                         string="Employee"
                         name="groupby_employee"
