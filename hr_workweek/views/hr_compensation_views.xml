@@ -83,7 +83,7 @@
     <record id="filter_responsible_hr_compensation" model="ir.filters">
         <field name="name">My compensations</field>
         <field name="model_id">hr.compensation</field>
-        <field name="user_id" eval="False" />
+        <field name="user_ids" eval="[(5, 0, 0)]"/>
         <field name="domain">[('responsible_id.user_id', '=', uid)]</field>
         <field name="is_default" eval="True" />
     </record>
