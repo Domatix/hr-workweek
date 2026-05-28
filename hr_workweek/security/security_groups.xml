@@ -2,7 +2,7 @@
 <odoo>
     <record id="group_timesheet_modified_date" model="res.groups">
         <field name="name">Timesheet Modified Date</field>
-        <field name="category_id" ref="base.module_category_human_resources"/>
+        <field name="privilege_id" ref="hr_timesheet.res_groups_privilege_timesheets"/>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 </odoo>
