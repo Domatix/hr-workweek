@@ -64,9 +64,9 @@
                             padding: 8px;
                         }
                     </style>
-                    <t t-set="calendars" t-value="ctx.get('calendars')"/>
+                    <t t-set="calendars" t-value="ctx.get('calendars', [])"/>
                     <t t-foreach="calendars" t-as="calendar">
-                        <t t-set="employees" t-value="ctx.get('employees_by_calendar').get(calendar.id, [])"/>
+                        <t t-set="employees" t-value="ctx.get('employees_by_calendar', {}).get(calendar.id, [])"/>
                         <h2 style="padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: white; color: #8595bf;">
                             <t t-out="calendar.name"/>
                         </h2>
