@@ -55,8 +55,10 @@ class TestHrWorkweek(TransactionCase):
             }
         )
         date_start, date_end = self.Employee.get_workweek_dates(fields.Date.context_today(self.Employee))
+        excluded_calendars = employee._get_workweek_exclusion_calendar_ids(date_start)
+        self.assertTrue(excluded_calendars)
         self.env["ir.config_parameter"].sudo().set_param(
-            "res.config.settings.excluded_calendar_ids", str(self.calendar.id)
+            "res.config.settings.excluded_calendar_ids", ",".join(map(str, excluded_calendars.ids))
         )
         self.Employee.create_current_workweek()
         self.assertFalse(
@@ -69,25 +71,40 @@ class TestHrWorkweek(TransactionCase):
             )
         )
 
-    def test_hours_to_work_uses_employee_version_calendar(self):
+    def test_hours_to_work_uses_employee_planned_calendar(self):
         empty_calendar = self.env["resource.calendar"].create(
-            {"name": "Workweek Empty Calendar"}
+            {
+                "name": "Workweek Empty Calendar",
+                "attendance_ids": [(5, 0, 0)],
+            }
         )
         date_start = fields.Date.to_date("2020-06-29")
         date_end = fields.Date.to_date("2020-07-05")
-        self.employee.create_version(
+        employee = self.Employee.create(
             {
-                "date_version": date_start,
-                "resource_calendar_id": empty_calendar.id,
+                "name": "Planned Calendar Employee",
+                "resource_calendar_id": self.calendar.id,
+                "calendar_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "calendar_id": empty_calendar.id,
+                            "date_start": date_start,
+                            "date_end": date_end,
+                        },
+                    )
+                ],
             }
         )
         workweek = self.Workweek.create(
             {
-                "employee_id": self.employee.id,
+                "employee_id": employee.id,
                 "date_start": date_start,
                 "date_end": date_end,
             }
         )
+
         self.assertEqual(workweek.hours_to_work, 0.0)
 
     def test_compute_holidays_lines_supports_multiple_records(self):
@@ -106,3 +123,30 @@ class TestHrWorkweek(TransactionCase):
             }
         )
         (week_1 | week_2)._compute_holidays_lines()
+
+    def test_global_leave_timesheet_can_be_created_outside_today(self):
+        AnalyticLine = self.env["account.analytic.line"]
+        if "global_leave_id" not in AnalyticLine._fields:
+            self.skipTest("project_timesheet_holidays is not installed")
+        project = self.env["project.project"].create({"name": "Global Leave Project"})
+        leave = self.env["resource.calendar.leaves"].create(
+            {
+                "name": "Global Leave",
+                "date_from": "2020-06-29 00:00:00",
+                "date_to": "2020-06-29 23:59:59",
+            }
+        )
+
+        line = AnalyticLine.create(
+            {
+                "name": "Global leave timesheet",
+                "project_id": project.id,
+                "account_id": project.account_id.id,
+                "employee_id": self.employee.id,
+                "date": fields.Date.to_date("2020-06-29"),
+                "unit_amount": 1.0,
+                "global_leave_id": leave.id,
+            }
+        )
+
+        self.assertFalse(line.hr_workweek_id)

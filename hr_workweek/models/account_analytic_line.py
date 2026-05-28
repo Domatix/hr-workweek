@@ -21,7 +21,7 @@ class AccountAnalyticLine(models.Model):
             vals_list = [vals_list]
         today = fields.Date.context_today(self)
         for vals in vals_list:
-            if vals.get('holiday_id'):
+            if vals.get('holiday_id') or vals.get('global_leave_id'):
                 continue
             date_val = vals.get('date_imputable') or vals.get('date')
             if date_val:
@@ -33,7 +33,7 @@ class AccountAnalyticLine(models.Model):
                     raise UserError(_("You can only record hours for today."))
         records = super().create(vals_list)
         for rec in records:
-            if rec.holiday_id:
+            if rec.holiday_id or ("global_leave_id" in rec._fields and rec.global_leave_id):
                 continue
             workweek = self.env["hr.workweek"].get_current_workweek(rec.employee_id, rec.date)
             if workweek:

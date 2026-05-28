@@ -200,9 +200,7 @@ class HrWorkweek(models.Model):
     def _get_employee_calendar(self, employee, date_start):
         if not employee:
             return self.env["resource.calendar"]
-        active_versions = employee.version_ids.filtered("active")
-        version = employee._get_version(date_start) if date_start and active_versions else employee.version_id
-        return version.resource_calendar_id or employee.resource_calendar_id or employee.resource_id.calendar_id
+        return employee._get_workweek_exclusion_calendar_ids(date_start)[:1]
 
     def date_is_working_day(self, workday):
         """
@@ -223,10 +221,12 @@ class HrWorkweek(models.Model):
                     record.hours_to_work = 0.0
                     continue
                 tz = pytz.timezone(calendar.tz or employee.tz or self.env.user.tz or "UTC")
-                start_date = tz.localize(datetime.combine(record.date_start, time.min))
-                end_date = tz.localize(datetime.combine(record.date_end, time.max))
+                start_date = tz.localize(datetime.combine(record.date_start, time.min)).astimezone(pytz.utc).replace(tzinfo=None)
+                end_date = tz.localize(datetime.combine(record.date_end, time.max)).astimezone(pytz.utc).replace(tzinfo=None)
                 hours = employee.with_context(
-                    exclude_public_holidays=True, employee_id=employee.id
+                    exclude_public_holidays=True,
+                    employee_id=employee.id,
+                    tz=calendar.tz or employee.tz or self.env.user.tz or "UTC",
                 )._get_work_days_data_batch(
                     start_date,
                     end_date,

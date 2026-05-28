@@ -59,7 +59,8 @@ class TestHrWorkweekReports(TransactionCase):
         self.Config.set_param("res.config.settings.send_mail_notification", "False")
         self.Config.set_param("res.config.settings.summary_notification_recipient_ids", "")
         self.Config.set_param("res.config.settings.send_from_employee_id", "")
-        self._allow_only_calendar(self.calendar)
+        self.allowed_calendar = self.employee._get_workweek_exclusion_calendar_ids(self.date_start)[:1]
+        self._allow_only_calendar(self.allowed_calendar)
 
     def _allow_only_calendar(self, calendar):
         excluded_calendars = self.env["resource.calendar"].search(
@@ -130,7 +131,7 @@ class TestHrWorkweekReports(TransactionCase):
         self.assertEqual(sent_mails[0]["res_id"], self.recipient.id)
         self.assertEqual(sent_mails[0]["email_values"]["email_to"], self.recipient.work_email)
         employees_by_calendar = sent_mails[0]["context"]["employees_by_calendar"]
-        calendar_employees = employees_by_calendar[self.calendar.id]
+        calendar_employees = employees_by_calendar[self.allowed_calendar.id]
         self.assertIn(self.employee, calendar_employees)
         self.assertNotIn(self.employee_without_workweek, calendar_employees)
 

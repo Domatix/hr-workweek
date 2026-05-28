@@ -30,7 +30,10 @@ class HrEmployee(models.Model):
             template = self.env.ref("hr_workweek_reports.hours_worked_email_template", raise_if_not_found=False)
             if template:
                 dateweek = fields.Date.context_today(self)
-                for employee in self.env["hr.employee"].search([("resource_calendar_id", "not in", excluded_calendars)]):
+                for employee in self.env["hr.employee"].sudo().search([]):
+                    calendars = employee._get_workweek_exclusion_calendar_ids(dateweek)
+                    if not calendars or calendars.filtered(lambda calendar: calendar.id in excluded_calendars):
+                        continue
                     if not self._get_report_workweek(employee, dateweek):
                         continue
                     context = {
@@ -54,16 +57,22 @@ class HrEmployee(models.Model):
             excluded_calendars = self._get_excluded_calendars(ir_config)
             template = self.env.ref("hr_workweek_reports.hours_worked_summary_email_template", raise_if_not_found=False)
             if template:
-                allowed_calendars = self.env["resource.calendar"].search([("id","not in",excluded_calendars)])
-                employees_by_calendar = {}
+                Calendar = self.env["resource.calendar"].sudo()
+                Employee = self.env["hr.employee"].sudo()
+                allowed_calendars = Calendar.search([("id", "not in", excluded_calendars)])
+                employees_by_calendar = {calendar.id: Employee.browse() for calendar in allowed_calendars}
                 dateweek = fields.Date.context_today(self)
-                for calendar in allowed_calendars:
-                    employees = self.env["hr.employee"].sudo().search(
-                        [("resource_calendar_id", "=", calendar.id)]
-                    )
-                    employees_by_calendar[calendar.id] = employees.filtered(
-                        lambda employee: self._get_report_workweek(employee, dateweek)
-                    )
+                for employee in Employee.search([]):
+                    calendars = employee._get_workweek_exclusion_calendar_ids(dateweek)
+                    if not calendars or calendars.filtered(lambda calendar: calendar.id in excluded_calendars):
+                        continue
+                    if not self._get_report_workweek(employee, dateweek):
+                        continue
+                    calendar = calendars[:1]
+                    if calendar.id not in employees_by_calendar:
+                        allowed_calendars |= calendar
+                        employees_by_calendar[calendar.id] = Employee.browse()
+                    employees_by_calendar[calendar.id] |= employee
                 recipient_ids = ir_config.get_param("res.config.settings.summary_notification_recipient_ids", default="").split(",")
                 allowed_employees = self.env["hr.employee"].search(
                     [("id", "in", [int(id) for id in recipient_ids if id.isdigit()])]
