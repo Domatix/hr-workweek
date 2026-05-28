@@ -223,6 +223,8 @@ class HrEmployee(models.Model):
                         "date_end": date_end,
                     }
                 )
+            else:
+                workweek._refresh_workweek_data()
             record.current_workweek = workweek.id
 
     def _get_workweek_exclusion_calendar_ids(self, dateweek=None):
