@@ -228,22 +228,22 @@ class HrWorkweek(models.Model):
                 if not calendar:
                     record.hours_to_work = 0.0
                     continue
-                tz = pytz.timezone(calendar.tz or employee.tz or self.env.user.tz or "UTC")
-                start_date = tz.localize(datetime.combine(record.date_start, time.min)).astimezone(pytz.utc)
-                end_date = tz.localize(datetime.combine(record.date_end, time.max)).astimezone(pytz.utc)
-                intervals = calendar.with_context(
-                    exclude_public_holidays=True,
-                    employee_id=employee.id,
-                )._work_intervals_batch(
-                    start_date,
-                    end_date,
-                    employee.resource_id,
-                )
                 record._compute_holidays_lines()
-                hours_data = calendar._get_attendance_intervals_days_data(
-                    intervals[employee.resource_id.id]
+                tz = pytz.timezone(calendar.tz or employee.tz or self.env.user.tz or "UTC")
+                start_date = tz.localize(datetime.combine(record.date_start, time.min))
+                end_date = tz.localize(datetime.combine(record.date_end, time.max))
+                attendances = calendar._attendance_intervals_batch(
+                    start_date, end_date, tz=tz,
+                )[False]
+                leaves = calendar._leave_intervals_batch(
+                    start_date, end_date, employee.resource_id, tz=tz,
+                )[employee.resource_id.id]
+                holiday_dates = set(record.hr_holidays_public_line_ids.mapped("date"))
+                record.hours_to_work = sum(
+                    (stop - start).total_seconds() / 3600
+                    for start, stop, _meta in (attendances - leaves)
+                    if start.date() not in holiday_dates
                 )
-                record.hours_to_work = hours_data.get("hours", 0.0)
             else:
                 record.hours_to_work = 0.0
 
