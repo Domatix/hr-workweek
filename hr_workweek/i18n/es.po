@@ -720,11 +720,12 @@ msgstr "Número de mensajes con error de envío"
 #: model:ir.model.fields,help:hr_workweek.field_hr_workweek__work_efficiency
 #: model:ir.model.fields,help:hr_workweek.field_project_task__work_efficiency
 msgid ""
-"Percentage of worked hours that are billable (unit_amount_invoiced / "
-"unit_amount * 100)"
+"Imputable duration vs worked hours (unit_amount_imputable / unit_amount * "
+"100), excluding closed-budget and non-billable tasks."
 msgstr ""
-"Porcentaje de horas trabajadas facturables (unit_amount_invoiced / "
-"unit_amount * 100)"
+"Duración imputable frente a horas trabajadas (unit_amount_imputable / "
+"unit_amount * 100), excluyendo tareas de presupuesto cerrado y no "
+"facturables."
 
 #. module: hr_workweek
 #: model:ir.model.fields,field_description:hr_workweek.field_hr_compensation__petition_date
