@@ -50,7 +50,8 @@ class HrEmployee(models.Model):
         string="Billing Efficiency",
         compute="_compute_efficiency",
         store=True,
-        help="Percentage of worked hours that are billable (unit_amount_invoiced / unit_amount * 100)"
+        help="Imputable duration vs worked hours (unit_amount_imputable / unit_amount * 100), "
+             "excluding closed-budget and non-billable tasks."
     )
     invoiced_hours_start_date_str = fields.Date(
         compute="_compute_invoiced_hours_start_date_str",
@@ -68,6 +69,7 @@ class HrEmployee(models.Model):
             employee.invoiced_hours_start_date_str = start_date or False
 
     @api.depends('analytic_line_ids.unit_amount', 'analytic_line_ids.unit_amount_invoiced',
+                 'analytic_line_ids.unit_amount_imputable',
                  'analytic_line_ids.task_id.closed_budget', 'analytic_line_ids.task_id.non_invoiceable')
     def _compute_efficiency(self):
         ir_config = self.env["ir.config_parameter"].sudo()
@@ -86,8 +88,8 @@ class HrEmployee(models.Model):
             employee.total_hours_invoiced = sum(emp_timesheets.mapped('unit_amount_invoiced'))
             eff_timesheets = emp_timesheets.filtered(lambda line: not (line.task_id.closed_budget or line.task_id.non_invoiceable))
             eff_worked = sum(eff_timesheets.mapped('unit_amount'))
-            eff_invoiced = sum(eff_timesheets.mapped('unit_amount_invoiced'))
-            employee.work_efficiency = (eff_invoiced / eff_worked * 100) if eff_worked > 0 else 0.0
+            eff_imputable = sum(eff_timesheets.mapped('unit_amount_imputable'))
+            employee.work_efficiency = (eff_imputable / eff_worked * 100) if eff_worked > 0 else 0.0
 
     def _compute_workweek_ids_count(self):
         for record in self:
