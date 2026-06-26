@@ -118,11 +118,15 @@ class HrWorkweek(models.Model):
                 week.account_analytic_line_ids.mapped('unit_amount_invoiced')
             )
 
-    @api.depends('hours_worked', 'unit_amount_invoiced')
+    @api.depends('account_analytic_line_ids.unit_amount', 'account_analytic_line_ids.unit_amount_invoiced',
+                 'account_analytic_line_ids.task_id.closed_budget', 'account_analytic_line_ids.task_id.non_invoiceable')
     def _compute_work_efficiency(self):
         for week in self:
-            if week.hours_worked > 0:
-                week.work_efficiency = (week.unit_amount_invoiced / week.hours_worked) * 100
+            eff_lines = week.account_analytic_line_ids.filtered(lambda line: not (line.task_id.closed_budget or line.task_id.non_invoiceable))
+            eff_worked = sum(eff_lines.mapped('unit_amount'))
+            eff_invoiced = sum(eff_lines.mapped('unit_amount_invoiced'))
+            if eff_worked > 0:
+                week.work_efficiency = (eff_invoiced / eff_worked) * 100
             else:
                 week.work_efficiency = 0.0
 
