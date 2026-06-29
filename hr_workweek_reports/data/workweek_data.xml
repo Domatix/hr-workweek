@@ -85,8 +85,7 @@
                                 <t t-foreach="employees" t-as="employee">
                                     <t t-set="workweek" t-value="employee.current_workweek"/>
                                     <t t-set="invoiced_hours" t-value="sum(workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) if workweek else 0.0"/>
-                                    <t t-set="worked_hours" t-value="workweek.hours_worked if workweek else 0.0"/>
-                                    <t t-set="efficiency" t-value="(invoiced_hours / worked_hours * 100) if worked_hours else 0.0"/>
+                                    <t t-set="efficiency" t-value="workweek.work_efficiency if workweek else 0.0"/>
                                     <tr style="text-align: left;">
                                         <td><span t-field="employee.name"/></td>
                                         <td>
@@ -124,15 +123,15 @@
                         <tbody>
                             <tr style="text-align: left;">
                                 <th style="background-color: #ef9a9a">Low efficiency (&lt;50%)</th>
-                                <th>Less than half of worked hours are invoiced</th>
+                                <th>Less than half of the worked hours are imputable</th>
                             </tr>
                             <tr style="text-align: left;">
                                 <th style="background-color: #ffff52">Medium efficiency (50-75%)</th>
-                                <th>Between 50-75% of worked hours are invoiced</th>
+                                <th>Between 50-75% of the worked hours are imputable</th>
                             </tr>
                             <tr style="text-align: left;">
                                 <th style="background-color: #69f0ae">High efficiency (&gt;75%)</th>
-                                <th>More than 75% of worked hours are invoiced</th>
+                                <th>More than 75% of the worked hours are imputable</th>
                             </tr>
                             <tr style="text-align: left;">
                                 <th style="background-color: #ef9a9a">Due hours</th>
