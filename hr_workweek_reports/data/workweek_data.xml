@@ -23,6 +23,9 @@
                         with <t t-out="workweek.unit_amount_invoiced" t-options="{'widget': 'float_time'}"/> invoiced hours
                         (<t t-out="round(workweek.work_efficiency, 2)"/>% efficiency).
                     </p>
+                    <p t-if="workweek.hours_leave">You also had <t
+                            t-out="workweek.hours_leave" t-options="{'widget': 'float_time'}"/>
+                        hours of time off this week.</p>
                 </t>
                 <t t-else="">
                     <p>No current workweek has been generated for this employee yet.</p>
@@ -84,7 +87,6 @@
                             <tbody>
                                 <t t-foreach="employees" t-as="employee">
                                     <t t-set="workweek" t-value="employee.current_workweek"/>
-                                    <t t-set="invoiced_hours" t-value="sum(workweek.account_analytic_line_ids.mapped('unit_amount_invoiced')) if workweek else 0.0"/>
                                     <t t-set="efficiency" t-value="workweek.work_efficiency if workweek else 0.0"/>
                                     <tr style="text-align: left;">
                                         <td><span t-field="employee.name"/></td>
@@ -93,12 +95,10 @@
                                             <span t-else="">-</span>
                                         </td>
                                         <td>
-                                            <span t-if="workweek" t-out="invoiced_hours" t-options="{'widget': 'float_time'}"/>
+                                            <span t-if="workweek" t-out="workweek.unit_amount_invoiced" t-options="{'widget': 'float_time'}"/>
                                             <span t-else="">-</span>
                                         </td>
-                                        <td t-att-style="'background-color: %s' % (
-                                            '#ef9a9a' if efficiency &lt; 50 else
-                                            '#ffff52' if efficiency &lt; 75 else '#69f0ae')">
+                                        <td t-att-style="'background-color: %s' % ('#ef9a9a' if efficiency &lt; 100 else '#69f0ae')">
                                             <t t-if="workweek">
                                                 <span t-out="round(efficiency, 2)"/>%
                                             </t>
@@ -122,16 +122,12 @@
                     <table style="font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; border-collapse: collapse; width: 100%;">
                         <tbody>
                             <tr style="text-align: left;">
-                                <th style="background-color: #ef9a9a">Low efficiency (&lt;50%)</th>
-                                <th>Less than half of the worked hours are imputable</th>
+                                <th style="background-color: #ef9a9a">Below target (&lt;100%)</th>
+                                <th>Less than 100% of the worked hours are imputable</th>
                             </tr>
                             <tr style="text-align: left;">
-                                <th style="background-color: #ffff52">Medium efficiency (50-75%)</th>
-                                <th>Between 50-75% of the worked hours are imputable</th>
-                            </tr>
-                            <tr style="text-align: left;">
-                                <th style="background-color: #69f0ae">High efficiency (&gt;75%)</th>
-                                <th>More than 75% of the worked hours are imputable</th>
+                                <th style="background-color: #69f0ae">On target (100% or more)</th>
+                                <th>100% or more of the worked hours are imputable</th>
                             </tr>
                             <tr style="text-align: left;">
                                 <th style="background-color: #ef9a9a">Due hours</th>
