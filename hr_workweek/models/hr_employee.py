@@ -38,20 +38,20 @@ class HrEmployee(models.Model):
         string="Total Worked",
         compute="_compute_efficiency",
         store=True,
-        help="Sum of all unit_amount from timesheets"
+        help="Sum of all unit_amount from timesheets, excluding time off requests"
     )
     total_hours_invoiced = fields.Float(
         string="Total Invoiced",
         compute="_compute_efficiency",
         store=True,
-        help="Sum of all unit_amount_invoiced from timesheets"
+        help="Sum of all unit_amount_invoiced from timesheets, excluding time off requests"
     )
     work_efficiency = fields.Float(
         string="Billing Efficiency",
         compute="_compute_efficiency",
         store=True,
         help="Imputable duration vs worked hours (unit_amount_imputable / unit_amount * 100), "
-             "excluding closed-budget and non-billable tasks."
+             "excluding time off requests, closed-budget and non-billable tasks."
     )
     invoiced_hours_start_date_str = fields.Date(
         compute="_compute_invoiced_hours_start_date_str",
@@ -69,7 +69,7 @@ class HrEmployee(models.Model):
             employee.invoiced_hours_start_date_str = start_date or False
 
     @api.depends('analytic_line_ids.unit_amount', 'analytic_line_ids.unit_amount_invoiced',
-                 'analytic_line_ids.unit_amount_imputable',
+                 'analytic_line_ids.unit_amount_imputable', 'analytic_line_ids.holiday_id',
                  'analytic_line_ids.task_id.closed_budget', 'analytic_line_ids.task_id.non_invoiceable')
     def _compute_efficiency(self):
         ir_config = self.env["ir.config_parameter"].sudo()
@@ -78,7 +78,13 @@ class HrEmployee(models.Model):
             default=""
         )
         start_date = fields.Date.to_date(start_date_str) if start_date_str else ""
-        domain = [('employee_id', 'in', self.ids), ('project_id', '!=', False)]
+        domain = [
+            ('employee_id', 'in', self.ids),
+            ('project_id', '!=', False),
+            ('holiday_id', '=', False),
+        ]
+        if 'global_leave_id' in self.env['account.analytic.line']._fields:
+            domain.append(('global_leave_id', '=', False))
         if start_date:
             domain.append(('date', '>=', start_date))
         timesheets = self.env['account.analytic.line'].search(domain)

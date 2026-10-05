@@ -405,3 +405,100 @@ class TestHrWorkweek(TransactionCase):
             }
         )
         self.assertFalse(outside_leave._get_overlapping_workweeks())
+
+    # ------------------------------------------------------------------
+    # Efficiency vs time off
+    # ------------------------------------------------------------------
+    def test_efficiency_excludes_time_off_lines(self):
+        """Time off timesheets are not work: they are excluded from the
+        employee/task efficiency, from the worked totals and from the
+        workweek analytic lines."""
+        AnalyticLine = self.env["account.analytic.line"]
+        employee = self._create_employee("Time Off Efficiency Employee")
+        self.env["ir.config_parameter"].sudo().set_param(
+            "res.config.settings.invoiced_hours_start_date", ""
+        )
+        project = self.env["project.project"].create({"name": "Efficiency Project"})
+        task = self.env["project.task"].create(
+            {"name": "Efficiency Task", "project_id": project.id}
+        )
+        today = fields.Date.context_today(self.Employee)
+        worked_line = AnalyticLine.create(
+            {
+                "name": "Worked",
+                "project_id": project.id,
+                "account_id": project.account_id.id,
+                "task_id": task.id,
+                "employee_id": employee.id,
+                "date": today,
+                "unit_amount": 10.0,
+            }
+        )
+        leave_type = self.env["hr.leave.type"].create({"name": "Efficiency Leave"})
+        leave = self.env["hr.leave"].create(
+            {
+                "name": "Efficiency Time Off",
+                "employee_id": employee.id,
+                "holiday_status_id": leave_type.id,
+                "request_date_from": today,
+                "request_date_to": today,
+            }
+        )
+        time_off_line = AnalyticLine.create(
+            {
+                "name": "Time Off",
+                "project_id": project.id,
+                "account_id": project.account_id.id,
+                "task_id": task.id,
+                "employee_id": employee.id,
+                "date": today,
+                "unit_amount": 8.0,
+                "holiday_id": leave.id,
+            }
+        )
+        time_off_line.write({"unit_amount_imputable": 0.0})
+
+        global_leave_line = False
+        if "global_leave_id" in AnalyticLine._fields:
+            global_leave = self.env["resource.calendar.leaves"].create(
+                {
+                    "name": "Efficiency Global Leave",
+                    "date_from": f"{today} 00:00:00",
+                    "date_to": f"{today} 23:59:59",
+                }
+            )
+            global_leave_line = AnalyticLine.create(
+                {
+                    "name": "Global Leave",
+                    "project_id": project.id,
+                    "account_id": project.account_id.id,
+                    "task_id": task.id,
+                    "employee_id": employee.id,
+                    "date": today,
+                    "unit_amount": 2.0,
+                    "global_leave_id": global_leave.id,
+                }
+            )
+            global_leave_line.write({"unit_amount_imputable": 0.0})
+
+        employee._compute_efficiency()
+        self.assertEqual(employee.total_hours_worked, 10.0)
+        self.assertEqual(employee.work_efficiency, 100.0)
+
+        task.invalidate_recordset()
+        self.assertEqual(task.work_efficiency, 100.0)
+
+        date_start, date_end = self.Employee.get_workweek_dates(today)
+        workweek = self.Workweek.create(
+            {
+                "employee_id": employee.id,
+                "date_start": date_start,
+                "date_end": date_end,
+            }
+        )
+        self.assertIn(worked_line, workweek.account_analytic_line_ids)
+        self.assertNotIn(time_off_line, workweek.account_analytic_line_ids)
+        if global_leave_line:
+            self.assertNotIn(global_leave_line, workweek.account_analytic_line_ids)
+        self.assertEqual(workweek.hours_worked, 10.0)
+        self.assertEqual(workweek.work_efficiency, 100.0)

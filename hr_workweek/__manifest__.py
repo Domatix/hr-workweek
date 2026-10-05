@@ -5,7 +5,7 @@
     "author": "Domatix",
     "website": "https://www.domatix.com",
     "category": "Human Resources",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "depends": [
         "hr_timesheet",
         "hr_employee_calendar_planning",
