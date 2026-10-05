@@ -1,6 +1,4 @@
 from odoo import api, fields, models
-import logging
-_logger = logging.getLogger(__name__)
 
 
 class HrEmployee(models.Model):
@@ -36,18 +34,7 @@ class HrEmployee(models.Model):
                         continue
                     if not self._get_report_workweek(employee, dateweek):
                         continue
-                    context = {
-                        'hours_difference': getattr(employee.current_workweek, 'hours_difference', 0),
-                        'hours_difference_str': str(getattr(employee.current_workweek, 'hours_difference', 0)),
-                        'current_workweek_hours_to_work': getattr(employee.current_workweek, 'hours_to_work', 0),
-                        'current_workweek_hours_to_work_str': str(getattr(employee.current_workweek, 'hours_to_work', 0)),
-                        'current_workweek_hours_worked_str': str(getattr(employee.current_workweek, 'hours_worked', 0)),
-                    }
-                    template.with_context(
-                        context
-                    ).send_mail(
-                        employee.id, force_send=True
-                    )
+                    template.send_mail(employee.id, force_send=True)
 
     @api.model
     def send_weekly_summary_report_email(self):
@@ -80,9 +67,6 @@ class HrEmployee(models.Model):
                 send_from_employee_id = int(ir_config.get_param("res.config.settings.send_from_employee_id", default=0) or 0)
                 send_from_employee = self.env["hr.employee"].browse(send_from_employee_id).exists()
                 email_from = send_from_employee.work_email or self.env.company.email or self.env.company.partner_id.email
-                 # Log del contexto completo
-                # _logger.info("Contexto que se pasará al template: calendars = %s", allowed_calendars)
-                # _logger.info("Contexto employees_by_calendar keys: %s", list(employees_by_calendar.values()))
                 for allowed_employee in allowed_employees:
                     if not allowed_employee.work_email:
                         continue

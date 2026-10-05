@@ -109,7 +109,7 @@ class HrWorkweek(models.Model):
         compute="_compute_work_efficiency",
         store=True,
         help="Imputable duration vs worked hours (unit_amount_imputable / unit_amount * 100), "
-             "excluding closed-budget and non-billable tasks."
+             "excluding time off requests, closed-budget and non-billable tasks."
     )
 
     @api.depends('account_analytic_line_ids.unit_amount_invoiced')
@@ -156,14 +156,15 @@ class HrWorkweek(models.Model):
             rec._compute_count()
 
     def search_analytic_lines(self):
-        return self.env["account.analytic.line"].search(
-            [
-                ("employee_id", "=", self.employee_id.id),
-                ("date", ">=", self.date_start),
-                ("date", "<=", self.date_end),
-                ("holiday_id", "=", False),
-            ]
-        )
+        domain = [
+            ("employee_id", "=", self.employee_id.id),
+            ("date", ">=", self.date_start),
+            ("date", "<=", self.date_end),
+            ("holiday_id", "=", False),
+        ]
+        if "global_leave_id" in self.env["account.analytic.line"]._fields:
+            domain.append(("global_leave_id", "=", False))
+        return self.env["account.analytic.line"].search(domain)
 
     def search_leave_ids(self):
         return self.env["hr.leave"].search(
